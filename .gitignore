@@ -1,38 +1,61 @@
+# Build directories and files
+/build*/
 *.o
-*.pro.*
+*.obj
+*.res
+*.out
+*.exe
+*.pdb
+*.gcno
+*.gcda
+*.AppImage
+*.dSYM
+*.dmg
+*.lock.json
+
+# General files
+.gdbinit
+.gdb_history
+*.log
 *.bak
-*.vert.xxd
-*.frag.xxd
-*.ttf.xxd
+*.tmp
+*~
+*.swp
+*.orig
+*.rej
+*.lnk
 
-mkxp
-xxd+
+# Platform-dependent dependencies
+/windows/downloads/
+/windows/build-*/
+/linux/downloads/
+/linux/build-*/
+/macos/dependencies/downloads/
+/macos/dependencies/build-*/
 
-/res
+# IDEs
+.idea/
 
-/build
-/builddir
-
-# VS Code
-/.vscode
+# Visual Studio Code
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+.history/
 *.code-workspace
 
 # Codeblocks
-mkxp.layout
-mkxp.cbp
+*.layout
+*.depend
 
-# General
+# macOS general files
+__MACOSX/
 .DS_Store
+._*
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
+# macOS: Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd
 .Spotlight-V100
@@ -41,27 +64,24 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# Directories potentially created on remote AFP share
+# macOS: Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
 Network Trash Folder
 Temporary Items
 .apdisk
 
-
-# Xcode
-
-## User settings
+# Xcode: User settings
 xcuserdata/
 .xcuserdatad
 *.xcuserstate
 xcschememanagement.plist
 
-## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
+# Xcode: Compatibility with Xcode 8 and earlier
 *.xcscmblueprint
 *.xccheckout
 
-## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
+# Xcode: Compatibility with Xcode 3 and earlier
 DerivedData/
 *.moved-aside
 *.pbxuser
@@ -72,6 +92,3 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-
-## Gcc Patch
-/*.gcno
