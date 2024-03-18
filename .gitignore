@@ -32,6 +32,7 @@
 /linux/build-*/
 /macos/dependencies/downloads/
 /macos/dependencies/build-*/
+/macos/dependencies/Frameworks/Steamworks/*
 
 # IDEs
 .idea/
