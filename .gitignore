@@ -1,5 +1,7 @@
 # Build directories and files
 /build*/
+/install*/
+/prefix*/
 *.o
 *.obj
 *.res

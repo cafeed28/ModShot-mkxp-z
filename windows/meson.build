@@ -1,10 +1,16 @@
-win = import('windows')
+windows = import('windows')
 
-res = files(
-windows_resource_directory + '/resource.h',
-windows_resource_directory + '/icon.ico',
-windows_resource_directory + '/mkxpz.manifest',
-windows_resource_directory + '/resource.rc'
+# mkxp-z Windows resources
+mkxp_win_resources = windows.compile_resources(
+    'resource.rc',
+    args: mkxp_windres_args,
+    depend_files: files(
+        'resource.h',
+        'resource.rc',
+        'mkxpz.manifest',
+        'icon.ico'
+    )
 )
 
-windows_resources = win.compile_resources(windows_resource_directory + '/resource.rc', depend_files: res)
+mkxp_sources += mkxp_win_resources
+mkxp_includes += include_directories('.')

@@ -1,51 +1,39 @@
-
-embedded_shaders = [
+mkxp_shaders = files(
     'common.h',
-    'transSimple.frag',
-    'trans.frag',
-    'hue.frag',
-    'sprite.frag',
-    'plane.frag',
-    'gray.frag',
-    'bitmapBlit.frag',
+    'minimal.vert',
     'flatColor.frag',
     'simple.frag',
+    'simple.vert',
     'simpleColor.frag',
+    'simpleColor.vert',
     'simpleAlpha.frag',
     'simpleAlphaUni.frag',
-    'tilemap.frag',
-    'flashMap.frag',
-    'bicubic.frag',
-    'lanczos3.frag',
-    'minimal.vert',
-    'simple.vert',
-    'simpleColor.vert',
+    'simpleMatrix.vert',
+    'bitmapBlit.frag',
+    'sprite.frag',
     'sprite.vert',
-    'tilemap.vert',
-    'tilemapvx.vert',
+    'plane.frag',
+    'hue.frag',
+    'gray.frag',
+    'trans.frag',
+    'transSimple.frag',
     'blur.frag',
     'blurH.vert',
     'blurV.vert',
-    'simpleMatrix.vert'
-]
+    'tilemap.frag',
+    'tilemap.vert',
+    'tilemapvx.vert',
+    'flashMap.frag',
+    'bicubic.frag',
+    'lanczos3.frag'
+)
 
-# xBRZ shader is GPLv3.
-if get_option('enable-https') == true
-    embedded_shaders += 'xbrz.frag'
+# xBRZ shader is licensed under GPLv3, so checking for enabled OpenSSL support
+# as it's also requires to be GPLv3 compatable
+if get_option('https') == true
+    mkxp_shaders += files('xbrz.frag')
 endif
 
-embedded_shaders_f = files(embedded_shaders)
+mkxp_shaders_xxd = xxd_gen.process(mkxp_shaders)
 
-count = 0
-foreach file : embedded_shaders_f
-    global_sources += custom_target(embedded_shaders[count],
-        input: file,
-        output: '@0@.xxd'.format(embedded_shaders[count]),
-        command: [
-            xxd, '-i', '@INPUT@'
-        ],
-        capture: true,
-        depend_files: embedded_shaders_f[count]
-        )
-    count += 1
-endforeach
+mkxp_sources += mkxp_shaders_xxd

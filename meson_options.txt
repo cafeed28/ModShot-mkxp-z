@@ -1,23 +1,122 @@
-option('mri_version', type: 'string', value: '3.1', description: 'Version of MRI to link with')
-option('mri_includes', type: 'string', value: '', description: 'Ruby manual include path')
-option('mri_libpath', type: 'string', value: '', description: 'Ruby manual lib path')
-option('mri_library', type: 'string', value: '', description: 'Ruby manual link name')
-option('force32', type: 'boolean', value: false, description: 'Force compiler to build a 32-bit executable')
+option(
+    'static',
+    type: 'boolean',
+    value: true,
+    description: 'Whether link static or shared libraries against an executable'
+)
 
-option('cxx11_experimental', type: 'boolean', value: false, description: 'Toggles between using ghc/filesystem or C++11 <experimental/filesystem>')
-option('shared_fluid', type: 'boolean', value: true, description: 'Dynamically link fluidsynth at build time')
-option('cjk_fallback_font', type: 'boolean', value: false, description: 'Use WenQuanYi Micro Hei as the fallback font')
-option('use_miniffi', type: 'boolean', value: true, description: 'Enable MiniFFI Ruby module (Win32API)')
-option('enable-https', type: 'boolean', value: true, description: 'Support HTTPS for get/post requests. Requires OpenSSL.')
-option('workdir_current', type: 'boolean', value: false, description: 'Keep current directory on startup')
+option(
+    'force_32bit',
+    type: 'boolean',
+    value: false,
+    description: 'Force compiler to build in 32-bit mode instead'
+)
 
-option('windows_resource_directory', type: 'string', value: 'windows', description: 'Path to Windows EXE resource directory')
+option(
+    'workdir_current',
+    type: 'boolean',
+    value: false,
+    description: 'Keep Current Working Directory on startup'
+)
 
-option('static_executable', type: 'boolean', value: true, description: 'Build a static executable (Windows-only)')
-option('appimagekit_path', type: 'string', value: '', description: 'Path to AppImageTool, used for building AppImages')
-option('appimage', type: 'boolean', value: false, description: 'Whether to install to an AppImage or just copy everything')
-option('steamworks_path', type: 'string', value: '', description: 'Path to Steamworks SDK')
-option('steam_appid', type: 'string', value: '', description: 'Steam AppID. Set this to use SteamAPI_RestartAppIfNecessary')
-option('steamshim_debug', type: 'boolean', value: false, description: 'Whether to show Steamshim debug messages in the console')
+option(
+    'gl_backend',
+    type: 'combo',
+    choices: ['gl', 'gles'],
+    value: 'gl',
+    description: 'Whether use OpenGL or OpenGL ES'
+)
 
-option('gfx_backend', type: 'combo', value: 'gl', choices: ['gl', 'gles'], description: 'Graphics rendering API to use.')
+option(
+    'appimagetool',
+    type: 'string',
+    value: '',
+    description: 'Path to AppImageTool binary. Providing will pack to AppImage file on install'
+)
+
+# mkxp-z modules options
+option(
+    'cjk_font',
+    type: 'boolean',
+    value: false,
+    description: 'Use WenQuanYi Micro Hei as the fallback font'
+)
+
+option(
+    'fluidsynth',
+    type: 'boolean',
+    value: true,
+    description: 'Enable FluidSynth (MIDI support)'
+)
+
+option(
+    'miniffi',
+    type: 'boolean',
+    value: true,
+    description: 'Enable MiniFFI Ruby bindings (Win32API)'
+)
+
+option(
+    'https',
+    type: 'boolean',
+    value: true,
+    description: 'Enable HTTPLite Ruby bindings (HTTPS support, Requires OpenSSL)'
+)
+
+option(
+    'cxx11_experimental',
+    type: 'boolean',
+    value: false,
+    description: 'Toggles between using ghc/filesystem or C++11 <experimental/filesystem>'
+)
+
+# Steamworks and Steamshim options
+option(
+    'steamworks_sdk',
+    type: 'string',
+    value: '',
+    description: 'Path to Steamworks SDK. Providing will enable Steam features and bindings'
+)
+
+option(
+    'steam_appid',
+    type: 'string',
+    value: '',
+    description: 'Steam AppID value. Set this to use SteamAPI_RestartAppIfNecessary'
+)
+
+option(
+    'steamshim_debug',
+    type: 'boolean',
+    value: false,
+    description: 'Whether to show Steamshim debug output console'
+)
+
+# Ruby library dependency options
+option(
+    'mri_version',
+    type: 'string',
+    value: '3.1',
+    description: 'Version of Ruby library to link with'
+)
+
+option(
+    'mri_includes',
+    type: 'string',
+    value: '',
+    description: 'Manual include path to Ruby headers'
+)
+
+option(
+    'mri_libname',
+    type: 'string',
+    value: '',
+    description: 'Manual library name of Ruby library'
+)
+
+option(
+    'mri_libpath',
+    type: 'string',
+    value: '',
+    description: 'Manual library path to Ruby library'
+)

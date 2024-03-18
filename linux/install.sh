@@ -21,5 +21,5 @@ get_dep libbsd
 
 if [ -n "$STEAM" ]; then
   echo "Copying steam_api..."
-  cp "$STEAM/libsteam_api.so" "${MESON_INSTALL_PREFIX}/usr/lib"
+  cp "$STEAM/libsteam_api.so" "${MESON_INSTALL_PREFIX}/lib$ARCH"
 fi
