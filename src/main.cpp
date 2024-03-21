@@ -49,7 +49,6 @@
 #include "system/system.h"
 
 #if defined(__WIN32__)
-#include "resource.h"
 #include <Winsock2.h>
 #include "util/win-consoleutils.h"
 

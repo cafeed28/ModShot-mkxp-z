@@ -1,0 +1,45 @@
+#include <winver.h>
+#include <winuser.h>
+
+#define VERSION_RES @VERSION_MAJOR@, @VERSION_MINOR@, @VERSION_PATCH@, 0
+
+#define IDI_ICON 1
+#define IDI_MANIFEST 1
+
+IDI_ICON ICON "icon.ico"
+IDI_MANIFEST RT_MANIFEST "@MANIFEST_FILE@"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VERSION_RES
+PRODUCTVERSION VERSION_RES
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+FILEFLAGS VS_FF_DEBUG
+#else
+FILEFLAGS 0x0
+#endif
+FILEOS VOS__WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "000004B0"
+        {
+            VALUE "FileDescription",  "@FILE_DESC@"
+            VALUE "FileVersion",      "@PROJECT_VERSION@"
+            VALUE "ProductName",      "@PRODUCT_NAME@"
+            VALUE "ProductVersion",   "@PROJECT_VERSION@"
+            VALUE "InternalName",     "@PROJECT_NAME@"
+            VALUE "OriginalFilename", "@FILENAME@"
+            VALUE "CompanyName",      "@AUTHOR@"
+            VALUE "LegalCopyright",   "@COPYRIGHT@"
+            VALUE "Comment",          "@COMMENT@"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0, 1200
+    }
+}

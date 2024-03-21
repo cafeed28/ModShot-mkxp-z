@@ -2,7 +2,7 @@ project(
     'mkxp-z',
     ['cpp', 'c'],
     version: '2.5.0',
-    license: 'GPLv2+',
+    license: 'GPL-2.0 or later',
     meson_version: '>=0.56.0',
     default_options: [
         'cpp_std=c++14',
@@ -27,6 +27,12 @@ fs = import('fs')
 
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
+
+# Get major, minor and patch version numbers
+version_split = meson.project_version().split('.')
+version_major = version_split[0]
+version_minor = version_split[1]
+version_patch = version_split[2]
 
 is_debug = get_option('buildtype').startswith('debug')
 is_crossbuild = meson.is_cross_build()
@@ -72,7 +78,6 @@ mkxp_includes = []
 mkxp_dependencies = []
 mkxp_cflags = []
 mkxp_ldflags = []
-mkxp_windres_args = []
 
 # Tell compiler that we want build in 32-bit mode
 if force_32bit
@@ -82,7 +87,6 @@ endif
 # Set MKXPZ_DEBUG define if we building in Debug build mode
 if is_debug
     mkxp_cflags += '-DMKXPZ_DEBUG'
-    mkxp_windres_args += '-DMKXPZ_DEBUG'
 endif
 
 # Add mkxp-z C flags
@@ -113,6 +117,26 @@ endif
 
 if host_system == 'windows' and cxx.get_id() != 'clang'
     mkxp_cflags += '-masm=intel'
+endif
+
+# Link statically libgcc, libstdc++, and winpthread/pthread
+if is_static
+    if host_system == 'windows'
+        mkxp_ldflags += [
+            '-static-libgcc',
+            '-static-libstdc++',
+            '-Wl,-Bstatic',
+            '-lgcc',
+            '-lstdc++',
+            '-lpthread',
+            '-Wl,-Bdynamic'
+        ]
+    elif host_system == 'linux'
+        mkxp_ldflags += [
+            '-static-libgcc',
+            '-static-libstdc++'
+        ]
+    endif
 endif
 
 # Add suffix of CPU arch to executable filename on Linux
@@ -208,45 +232,15 @@ if steamworks_path != ''
     endif
 endif
 
-# Include subdirectories
-subdir('assets')
-subdir('shader')
-subdir('src')
-subdir('binding')
-
-if host_system == 'windows'
-    subdir('windows')
-elif host_system == 'linux'
-    subdir('linux')
-endif
-
-if is_static
-    # Link statically libgcc, libstdc++, and winpthread/pthread
-    if host_system == 'windows'
-        mkxp_ldflags += [
-            '-static-libgcc',
-            '-static-libstdc++',
-            '-Wl,-Bstatic',
-            '-lgcc',
-            '-lstdc++',
-            '-lpthread',
-            '-Wl,-Bdynamic'
-        ]
-    elif host_system == 'linux'
-        mkxp_ldflags += [
-            '-static-libgcc',
-            '-static-libstdc++'
-        ]
-    endif
-endif
-
 # Build Steamshim if we have Steamworks SDK
 if mkxp_steam
     # Define global variables for Steamshim target
     steamshim_name = 'steamshim'
-    steamshim_sources = files(
-        'steamshim/steamshim_parent.cpp'
-    )
+    steamshim_sources = [
+        files(
+            'steamshim/steamshim_parent.cpp'
+        )
+    ]
     steamshim_dependencies = [
         steamworks_lib
     ]
@@ -276,13 +270,27 @@ if mkxp_steam
         steamshim_cflags += '-DSTEAM_APPID=@0@'.format(get_option('steam_appid'))
     endif
 
-    # Set debug define and Windows Subsystem version for Steamshim
+    # Set debug define and Console subsystem version for Steamshim
     if get_option('steamshim_debug') == true
         steamshim_cflags += '-DSTEAMSHIM_DEBUG'
         steamshim_win_subsystem = 'console,6.0'
     endif
+endif
 
-    # Steamshim executable target
+# Include subdirectories
+subdir('assets')
+subdir('shader')
+subdir('src')
+subdir('binding')
+
+if host_system == 'windows'
+    subdir('windows')
+elif host_system == 'linux'
+    subdir('linux')
+endif
+
+# Steamshim executable target
+if mkxp_steam
     executable(
         steamshim_name,
         sources: steamshim_sources,
