@@ -543,8 +543,10 @@ public:
                  * be turned on, so turn it off temporarily */
                 glState.scissorTest.pushSet(false);
                 
-                GLMeta::blitBegin(pp.frontBuffer());
-                GLMeta::blitSource(pp.backBuffer());
+                int scaleIsSpecial = GLMeta::blitScaleIsSpecial(pp.frontBuffer(), false, geometry.rect, pp.backBuffer(), geometry.rect);
+
+                GLMeta::blitBegin(pp.frontBuffer(), false, scaleIsSpecial);
+                GLMeta::blitSource(pp.backBuffer(), scaleIsSpecial);
                 GLMeta::blitRectangle(geometry.rect, Vec2i());
                 GLMeta::blitEnd();
                 
@@ -1009,27 +1011,29 @@ struct GraphicsPrivate {
     void compositeToBufferScaled(TEXFBO &buffer, int destWidth, int destHeight) {
         screen.composite();
         
-        GLMeta::blitBegin(buffer);
-        GLMeta::blitSource(screen.getPP().frontBuffer());
+        int scaleIsSpecial = GLMeta::blitScaleIsSpecial(buffer, false, IntRect(0, 0, destWidth, destHeight), screen.getPP().frontBuffer(), IntRect(0, 0, scRes.x, scRes.y));
+
+        GLMeta::blitBegin(buffer, false, scaleIsSpecial);
+        GLMeta::blitSource(screen.getPP().frontBuffer(), scaleIsSpecial);
         GLMeta::blitRectangle(IntRect(0, 0, scRes.x, scRes.y), IntRect(0, 0, destWidth, destHeight));
         GLMeta::blitEnd();
     }
     
-    void metaBlitBufferFlippedScaled() {
-        metaBlitBufferFlippedScaled(scRes);
+    void metaBlitBufferFlippedScaled(int scaleIsSpecial) {
+        metaBlitBufferFlippedScaled(scRes, scaleIsSpecial);
         GLMeta::blitRectangle(
                               IntRect(0, 0, scRes.x, scRes.y),
                               IntRect(scOffset.x,
                                       (scSize.y + scOffset.y),
                                       scSize.x,
                                       -scSize.y),
-                              threadData->config.smoothScaling == Bilinear);
+                              GLMeta::smoothScalingMethod(scaleIsSpecial) == Bilinear);
     }
     
-    void metaBlitBufferFlippedScaled(const Vec2i &sourceSize, bool forceNearestNeighbor=false) {
+    void metaBlitBufferFlippedScaled(const Vec2i &sourceSize, int scaleIsSpecial, bool forceNearestNeighbor=false) {
         GLMeta::blitRectangle(IntRect(0, 0, sourceSize.x, sourceSize.y),
                               IntRect(scOffset.x, scSize.y+scOffset.y, scSize.x, -scSize.y),
-                              !forceNearestNeighbor && threadData->config.smoothScaling == Bilinear);
+                              !forceNearestNeighbor && GLMeta::smoothScalingMethod(scaleIsSpecial) == Bilinear);
     }
     
     void redrawScreen() {
@@ -1038,11 +1042,13 @@ struct GraphicsPrivate {
         // maybe unspaghetti this later
         if (integerScaleStepApplicable() && !integerLastMileScaling)
         {
-            GLMeta::blitBeginScreen(winSize);
-            GLMeta::blitSource(screen.getPP().frontBuffer());
+            int scaleIsSpecial = GLMeta::blitScaleIsSpecial(integerScaleBuffer, false, IntRect(0, 0, scSize.x, scSize.y), screen.getPP().frontBuffer(), IntRect(0, 0, scRes.x, scRes.y));
+
+            GLMeta::blitBeginScreen(winSize, scaleIsSpecial);
+            GLMeta::blitSource(screen.getPP().frontBuffer(), scaleIsSpecial);
             
             FBO::clear();
-            metaBlitBufferFlippedScaled(scRes, true);
+            metaBlitBufferFlippedScaled(scRes, scaleIsSpecial, true);
             GLMeta::blitEnd();
             
             swapGLBuffer();
@@ -1051,9 +1057,11 @@ struct GraphicsPrivate {
         
         if (integerScaleStepApplicable())
         {
+            int scaleIsSpecial = GLMeta::blitScaleIsSpecial(integerScaleBuffer, false, IntRect(0, 0, integerScaleBuffer.width, integerScaleBuffer.height), screen.getPP().frontBuffer(), IntRect(0, 0, scRes.x, scRes.y));
+
             assert(integerScaleBuffer.tex != TEX::ID(0));
-            GLMeta::blitBegin(integerScaleBuffer);
-            GLMeta::blitSource(screen.getPP().frontBuffer());
+            GLMeta::blitBegin(integerScaleBuffer, false, scaleIsSpecial);
+            GLMeta::blitSource(screen.getPP().frontBuffer(), scaleIsSpecial);
             
             GLMeta::blitRectangle(IntRect(0, 0, scRes.x, scRes.y),
                                   IntRect(0, 0, integerScaleBuffer.width, integerScaleBuffer.height),
@@ -1062,24 +1070,34 @@ struct GraphicsPrivate {
             GLMeta::blitEnd();
         }
         
-        GLMeta::blitBeginScreen(winSize);
-        //GLMeta::blitSource(screen.getPP().frontBuffer());
-        
+
         Vec2i sourceSize;
-        
+
         if (integerScaleActive)
         {
-            GLMeta::blitSource(integerScaleBuffer);
             sourceSize = Vec2i(integerScaleBuffer.width, integerScaleBuffer.height);
         }
         else
         {
-            GLMeta::blitSource(screen.getPP().frontBuffer());
             sourceSize = scRes;
+        }
+
+        int scaleIsSpecial = GLMeta::blitScaleIsSpecial(integerScaleBuffer, false, IntRect(0, 0, scSize.x, scSize.y), integerScaleActive ? integerScaleBuffer : screen.getPP().frontBuffer(), IntRect(0, 0, sourceSize.x, sourceSize.y));
+
+        GLMeta::blitBeginScreen(winSize, scaleIsSpecial);
+        //GLMeta::blitSource(screen.getPP().frontBuffer(), scaleIsSpecial);
+
+        if (integerScaleActive)
+        {
+            GLMeta::blitSource(integerScaleBuffer, scaleIsSpecial);
+        }
+        else
+        {
+            GLMeta::blitSource(screen.getPP().frontBuffer(), scaleIsSpecial);
         }
         
         FBO::clear();
-        metaBlitBufferFlippedScaled(sourceSize);
+        metaBlitBufferFlippedScaled(sourceSize, scaleIsSpecial);
         
         GLMeta::blitEnd();
         
@@ -1309,9 +1327,11 @@ void Graphics::transition(int duration, const char *filename, int vague) {
         FBO::unbind();
         FBO::clear();
         
-        GLMeta::blitBeginScreen(Vec2i(p->winSize));
-        GLMeta::blitSource(transBuffer);
-        p->metaBlitBufferFlippedScaled();
+        int scaleIsSpecial = GLMeta::blitScaleIsSpecial(p->integerScaleBuffer, false, IntRect(0, 0, p->scSize.x, p->scSize.y), transBuffer, IntRect(0, 0, p->scRes.x, p->scRes.y));
+
+        GLMeta::blitBeginScreen(Vec2i(p->winSize), scaleIsSpecial);
+        GLMeta::blitSource(transBuffer, scaleIsSpecial);
+        p->metaBlitBufferFlippedScaled(scaleIsSpecial);
         GLMeta::blitEnd();
         
         p->swapGLBuffer();
@@ -1368,11 +1388,13 @@ void Graphics::fadeout(int duration) {
         setBrightness(diff + (curr / duration) * i);
         
         if (p->frozen) {
-            GLMeta::blitBeginScreen(p->scSize);
-            GLMeta::blitSource(p->frozenScene);
+            int scaleIsSpecial = GLMeta::blitScaleIsSpecial(p->integerScaleBuffer, false, IntRect(0, 0, p->scSize.x, p->scSize.y), p->frozenScene, IntRect(0, 0, p->scRes.x, p->scRes.y));
+
+            GLMeta::blitBeginScreen(p->scSize, scaleIsSpecial);
+            GLMeta::blitSource(p->frozenScene, scaleIsSpecial);
             
             FBO::clear();
-            p->metaBlitBufferFlippedScaled();
+            p->metaBlitBufferFlippedScaled(scaleIsSpecial);
             
             GLMeta::blitEnd();
             
@@ -1393,11 +1415,13 @@ void Graphics::fadein(int duration) {
         setBrightness(curr + (diff / duration) * i);
         
         if (p->frozen) {
-            GLMeta::blitBeginScreen(p->scSize);
-            GLMeta::blitSource(p->frozenScene);
+            int scaleIsSpecial = GLMeta::blitScaleIsSpecial(p->integerScaleBuffer, false, IntRect(0, 0, p->scSize.x, p->scSize.y), p->frozenScene, IntRect(0, 0, p->scRes.x, p->scRes.y));
+
+            GLMeta::blitBeginScreen(p->scSize, scaleIsSpecial);
+            GLMeta::blitSource(p->frozenScene, scaleIsSpecial);
             
             FBO::clear();
-            p->metaBlitBufferFlippedScaled();
+            p->metaBlitBufferFlippedScaled(scaleIsSpecial);
             
             GLMeta::blitEnd();
             
@@ -1701,8 +1725,11 @@ void Graphics::repaintWait(const AtomicFlag &exitCond, bool checkReset) {
     
     /* Repaint the screen with the last good frame we drew */
     TEXFBO &lastFrame = p->screen.getPP().frontBuffer();
-    GLMeta::blitBeginScreen(p->winSize);
-    GLMeta::blitSource(lastFrame);
+
+    int scaleIsSpecial = GLMeta::blitScaleIsSpecial(p->integerScaleBuffer, false, IntRect(0, 0, p->scSize.x, p->scSize.y), lastFrame, IntRect(0, 0, p->scRes.x, p->scRes.y));
+
+    GLMeta::blitBeginScreen(p->winSize, scaleIsSpecial);
+    GLMeta::blitSource(lastFrame, scaleIsSpecial);
     
     while (!exitCond) {
         shState->checkShutdown();
@@ -1711,7 +1738,7 @@ void Graphics::repaintWait(const AtomicFlag &exitCond, bool checkReset) {
             shState->checkReset();
         
         FBO::clear();
-        p->metaBlitBufferFlippedScaled();
+        p->metaBlitBufferFlippedScaled(scaleIsSpecial);
         SDL_GL_SwapWindow(p->threadData->window);
         p->fpsLimiter.delay();
         
