@@ -144,17 +144,9 @@ if host_system == 'linux' and appimagetool == ''
     mkxp_name += '.' + host_cpu
 endif
 
-# Set executable RPATH on Linux
-mkxp_rpath = ''
-if host_system == 'linux'
-    mkxp_rpath = '$ORIGIN/lib'
-    if appimagetool == ''
-        if is_64bit and not force_32bit
-            mkxp_rpath += '64'
-        else
-            mkxp_rpath += '32'
-        endif
-    endif
+mkxp_gplv3 = false
+if get_option('https') == true
+    mkxp_gplv3 = true
 endif
 
 if get_option('workdir_current') == true
@@ -299,8 +291,7 @@ if mkxp_steam
         c_args: steamshim_cflags,
         cpp_args: steamshim_cflags,
         link_args: steamshim_ldflags,
-        install: true,
-        install_rpath: mkxp_rpath,
+        install: (appimagetool == ''),
         win_subsystem: steamshim_win_subsystem
     )
 endif
@@ -314,7 +305,6 @@ executable(
     c_args: mkxp_cflags,
     cpp_args: mkxp_cflags + warn_args,
     link_args: mkxp_ldflags,
-    install: true,
-    install_rpath: mkxp_rpath,
+    install: (appimagetool == ''),
     win_subsystem: 'windows,6.0'
 )

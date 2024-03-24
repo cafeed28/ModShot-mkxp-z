@@ -30,7 +30,7 @@ mkxp_shaders = files(
 
 # xBRZ shader is licensed under GPLv3, so checking for enabled OpenSSL support
 # as it's also requires to be GPLv3 compatable
-if get_option('https') == true
+if mkxp_gplv3 == true
     mkxp_shaders += files('xbrz.frag')
 endif
 

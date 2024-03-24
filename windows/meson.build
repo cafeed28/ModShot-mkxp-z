@@ -1,9 +1,30 @@
 win = import('windows')
 
+# Define install script parameters
+install_gplv3 = '0'
+
+if mkxp_gplv3 == true
+    install_gplv3 = '1'
+endif
+
+# Windows install script
+if mkxp_steam
+    meson.add_install_script('install.sh', install_gplv3, steamworks_libpath, steamworks_libname)
+else
+    meson.add_install_script('install.sh', install_gplv3, '', '')
+endif
+
 win_rc_args = []
 
 if is_debug
     win_rc_args += '-D_DEBUG'
+endif
+
+win_copyright_license = 'Licensed under '
+if mkxp_gplv3
+    win_copyright_license += 'GPL-3.0.'
+else
+    win_copyright_license += 'GPL-2.0 or later.'
 endif
 
 win_config = configuration_data()
@@ -13,7 +34,7 @@ win_config.set('VERSION_MAJOR', version_major)
 win_config.set('VERSION_MINOR', version_minor)
 win_config.set('VERSION_PATCH', version_patch)
 win_config.set('AUTHOR', '')
-win_config.set('COPYRIGHT', '(c) 2024, mkxp-z Contributors. Licensed under GPL-2.0 or later.')
+win_config.set('COPYRIGHT', '(c) 2024, mkxp-z Contributors. @0@'.format(win_copyright_license))
 win_config.set('COMMENT', '')
 
 if git_hash != '0000000000000000000000000000000000000000'

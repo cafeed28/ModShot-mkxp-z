@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=@NAME@
+Icon=@EXECNAME@
+Exec=@EXECNAME@
+Comment=@DESCRIPTION@
+Categories=Game;
+Terminal=false
+X-AppImage-Name=@NAME@
+X-AppImage-Version=@VERSION@
+X-AppImage-Arch=@ARCH@
