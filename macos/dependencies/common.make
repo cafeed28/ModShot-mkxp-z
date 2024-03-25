@@ -105,7 +105,6 @@ download: \
 	$(DLDIR)/$(ARCH)/libtheora/autogen.sh \
 	$(DLDIR)/zlib-ng/CMakeLists.txt \
 	$(DLDIR)/physfs/CMakeLists.txt \
-	$(DLDIR)/$(ARCH)/libiconv/configure.ac \
 	$(DLDIR)/uchardet/CMakeLists.txt \
 	$(DLDIR)/libpng/CMakeLists.txt \
 	$(DLDIR)/libjpeg/CMakeLists.txt \
@@ -129,7 +128,6 @@ build: \
 	libtheora \
 	zlib \
 	physfs \
-	libiconv \
 	uchardet \
 	libpng \
 	libjpeg \
@@ -175,7 +173,7 @@ clean-prefix:
 
 .PHONY: \
 	all download build init clean clean-download clean-prefix \
-	libogg libvorbis libtheora zlib physfs uchardet libiconv libpng libjpeg \
+	libogg libvorbis libtheora zlib physfs uchardet libpng libjpeg \
 	pixman harfbuzz freetype harfbuzz-ft sdl2 sdl2_image sdl2_ttf sdl2_sound \
 	openal libyaml libffi openssl ruby ruby-ext-openssl
 
@@ -212,10 +210,6 @@ OPTS_PHYSFS := \
 	-DPHYSFS_BUILD_SHARED=OFF \
 	-DPHYSFS_BUILD_TEST=OFF \
 	-DPHYSFS_BUILD_DOCS=OFF
-
-OPTS_LIBICONV := \
-	--disable-shared \
-	--enable-static
 
 OPTS_UCHARDET := \
 	-DBUILD_STATIC=ON \
@@ -401,28 +395,6 @@ $(DLDIR)/physfs/$(BDIR)/Makefile: $(DLDIR)/physfs/CMakeLists.txt
 $(DLDIR)/physfs/CMakeLists.txt:
 	@printf "\e[94m=>\e[0m \e[36mDownloading PhysFS 3.2.0...\e[0m\n"
 	@$(GIT) -b release-3.2.0 https://github.com/icculus/physfs $(DLDIR)/physfs
-
-# ---------------------------------- GNU iconv ---------------------------------
-libiconv: init $(LIBDIR)/libcharset.a
-
-$(LIBDIR)/libcharset.a: $(DLDIR)/$(ARCH)/libiconv/lib/.libs/libiconv.a
-	@printf "\e[94m=>\e[0m \e[36mInstalling libiconv...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libiconv; make install
-
-$(DLDIR)/$(ARCH)/libiconv/lib/.libs/libiconv.a: $(DLDIR)/$(ARCH)/libiconv/Makefile
-	@printf "\e[94m=>\e[0m \e[36mBuilding libiconv...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libiconv; make -j $(NPROC)
-
-$(DLDIR)/$(ARCH)/libiconv/Makefile: $(DLDIR)/$(ARCH)/libiconv/configure.ac
-	@printf "\e[94m=>\e[0m \e[36mConfiguring libiconv...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/libiconv; $(CONFIGURE) $(OPTS_LIBICONV)
-
-$(DLDIR)/$(ARCH)/libiconv/configure.ac:
-	@printf "\e[94m=>\e[0m \e[36mDownloading GNU iconv 1.17...\e[0m\n"
-	@wget -q https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz -P $(DLDIR)/$(ARCH)/
-	@printf "\e[94m=>\e[0m \e[36mUnpacking GNU iconv...\e[0m\n"
-	@tar -xzf $(DLDIR)/$(ARCH)/libiconv-1.17.tar.gz -C $(DLDIR)/$(ARCH)/
-	@mv $(DLDIR)/$(ARCH)/libiconv-1.17 $(DLDIR)/$(ARCH)/libiconv
 
 # ---------------------------------- uchardet ----------------------------------
 uchardet: init $(LIBDIR)/libuchardet.a
