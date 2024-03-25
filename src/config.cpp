@@ -351,6 +351,10 @@ try { exp } catch (...) {}
     // may not take effect
     manualFolderSelect = getEnvironmentBool("MKXPZ_FOLDER_SELECT", false);
     
+    // Force fullscreen on Steam Big Picture Mode
+    if (getEnvironmentBool("SteamTenfoot", false))
+        fullscreen = true;
+    
     raw = optsJ;
 }
 

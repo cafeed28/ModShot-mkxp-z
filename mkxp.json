@@ -75,6 +75,7 @@
     // Start game in fullscreen instead.
     // This can be toggled with Alt+Enter at runtime
     // if "anyAltToggleFS" is enabled in config.
+    // Ignored when running in Steam Big Picture Mode.
     // (Default: false)
     // 
     // "fullscreen": false,
