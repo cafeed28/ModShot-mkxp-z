@@ -101,8 +101,21 @@
     // 
     // "smoothScalingDown": 0,
 
-    // Apply MipMap interpolation when game screen is downscaled.
-    // Requires "smoothScalingDown" config to be set to 1.
+    // Apply smooth interpolation when bitmaps are upscaled.
+    // (Same possible values as "smoothScaling" config)
+    // (Default: 0)
+    // 
+    // "bitmapSmoothScaling": 0,
+
+    // Apply smooth interpolation when bitmaps are downscaled.
+    // (Same possible values as "smoothScaling" config)
+    // (Default: 0)
+    // 
+    // "bitmapSmoothScalingDown": 0,
+
+    // Apply MipMap interpolation when game screen or bitmaps are downscaled.
+    // Requires "smoothScalingDown" or "bitmapSmoothScalingDown" config
+    // to be set to 1.
     // (Default: false)
     // 
     // "smoothScalingMipmaps": false,
