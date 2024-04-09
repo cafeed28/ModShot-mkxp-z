@@ -1,0 +1,11 @@
+// Executable filename for each mkxp-z targets
+MKXPZ_EXECUTABLE_NAME = $(PRODUCT_NAME)
+
+// Ruby (MRI) version to include Ruby headers
+MRI_VERSION = 3.1.0
+
+// Exclude directory names from recursive search
+EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = $(inherited) dependencies build build-* prefix prefix-* DerivedData *.noindex
+
+// Dependencies directory for include and library paths
+DEPENDENCY_SEARCH_PATH = $(PROJECT_DIR)/dependencies/build-$(BUILD_ARCH)
