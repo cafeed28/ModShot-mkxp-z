@@ -268,14 +268,32 @@ static void mriBindingInit() {
     
     rb_gv_set("BTEST", rb_bool_new(shState->config().editor.battleTest));
     
+    /* Set mkxp-z version constants */
+    std::string mkxpz_version(MKXPZ_VERSION);
+    std::string git_hash;
+    
 #ifdef MKXPZ_BUILD_XCODE
-    std::string version = std::string(MKXPZ_VERSION "/") + getPlistValue("GIT_COMMIT_HASH");
-    VALUE vers = rb_utf8_str_new_cstr(version.c_str());
+    if (!getPlistValue("MKXPGitHash").empty())
+        git_hash = getPlistValue("MKXPGitHash");
+    else
+        git_hash = "0000000000000000000000000000000000000000";
 #else
-    VALUE vers = rb_utf8_str_new_cstr(MKXPZ_VERSION "/" MKXPZ_GIT_HASH);
+    git_hash = MKXPZ_GIT_HASH;
 #endif
-    rb_str_freeze(vers);
-    rb_define_const(mod, "VERSION", vers);
+    
+    std::string str_version = mkxpz_version + "/" + git_hash.substr(0, 7);
+    
+    VALUE rbstr_version = rb_utf8_str_new_cstr(str_version.c_str());
+    VALUE rbstr_git_hash = rb_utf8_str_new_cstr(git_hash.c_str());
+    VALUE rbstr_git_hash_short = rb_utf8_str_new_cstr(git_hash.substr(0, 7).c_str());
+    
+    rb_str_freeze(rbstr_version);
+    rb_str_freeze(rbstr_git_hash);
+    rb_str_freeze(rbstr_git_hash_short);
+    
+    rb_define_const(mod, "VERSION", rbstr_version);
+    rb_define_const(mod, "GIT_HASH", rbstr_git_hash);
+    rb_define_const(mod, "GIT_HASH_SHORT", rbstr_git_hash_short);
     
     // Automatically load zlib if it's present -- the correct way this time
     int state;
