@@ -54,7 +54,7 @@ LDFLAGS := -L$(LIBDIR)
 
 # Autoconf variables and arguments
 CONFIGURE_ENV  := PKG_CONFIG_LIBDIR="$(PKGDIR)" CC="$(CC)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" $(DEPLOYMENT_TARGET_ENV)
-CONFIGURE_ARGS := --prefix="$(PREFIX)" --libdir="$(PREFIX)/lib"
+CONFIGURE_ARGS := --host="$(HOST)" --prefix="$(PREFIX)" --libdir="$(PREFIX)/lib"
 
 # CMake options
 CMAKE_ARGS := \
