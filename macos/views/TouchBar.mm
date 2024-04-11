@@ -87,12 +87,12 @@ MKXPZTouchBar *_sharedTouchBar;
 -(NSTouchBarItem *)touchBar:(NSTouchBar *)touchBar makeItemForIdentifier:(NSTouchBarItemIdentifier)identifier {
     NSCustomTouchBarItem *ret = [[NSCustomTouchBarItem alloc] initWithIdentifier:identifier];
     if ([identifier isEqualToString:@"reset"]) {
-        ret.view = [NSButton buttonWithImage:[NSImage imageNamed:@"gobackward"] target:self action:@selector(simF12)];
+        ret.view = [NSButton buttonWithImage:[NSImage imageNamed:@"reset"] target:self action:@selector(simF12)];
         
         ((NSButton*)ret.view).bezelColor = [NSColor colorWithRed:0xac/255.0 green:0x14/255.0 blue:0x01/255.0 alpha:1.0];
     }
     else if ([identifier isEqualToString:@"rebind"]) {
-        ret.view = [NSButton buttonWithImage:[NSImage imageNamed:@"gear"] target:self action:@selector(openSettingsMenu)];
+        ret.view = [NSButton buttonWithImage:[NSImage imageNamed:@"settings"] target:self action:@selector(openSettingsMenu)];
     }
     else if ([identifier isEqualToString:@"icon"]) {
         NSImage *appIcon = [[NSApplication sharedApplication] applicationIconImage];
