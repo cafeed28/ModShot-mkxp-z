@@ -50,6 +50,9 @@ function make_prefix {
   echo "Installing lib$BITS/libruby.so.3.1..."
   cp -pu "$MKXPZ_PREFIX/lib/libruby.so.3.1" "$INSTALL/lib$BITS/"
 
+  # Remove RPATH from shared libraries
+  patchelf "$INSTALL/lib$BITS/libruby.so.3.1" --remove-rpath
+
   # Copy Steamworks files
   if [[ -n "$STEAM_PATH" ]]; then
     # Copy Steamworks SDK shared library
@@ -77,6 +80,9 @@ function make_prefix {
   echo "Installing Ruby library to rubylib/3.1.0..."
   mkdir -p "$INSTALL/rubylib"
   cp -pur "$MKXPZ_PREFIX/lib/ruby/3.1.0/." "$INSTALL/rubylib/3.1.0/"
+
+  # Remove RPATH from native extensions in Ruby library
+  patchelf "$INSTALL/rubylib/3.1.0"/*/*.so --remove-rpath
 
   # Copy GPL-3.0 license file
   if [[ -n "$GPLV3" ]]; then
@@ -141,6 +147,9 @@ function make_appdir {
   # Copy Ruby shared library
   echo "Copying libruby.so.3.1 to $MKXP_NAME.AppDir/usr/lib..."
   cp -pu "$MKXPZ_PREFIX/lib/libruby.so.3.1" "$APPDIR_LIB/"
+
+  # Remove RPATH from shared libraries
+  patchelf "$APPDIR_LIB/libruby.so.3.1" --remove-rpath
 
   # Copy Steamworks SDK shared library
   if [[ -n "$STEAM_PATH" ]]; then
