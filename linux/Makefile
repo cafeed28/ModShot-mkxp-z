@@ -51,7 +51,8 @@ CFLAGS  := -O3 -I$(INCDIR)
 LDFLAGS := -L$(LIBDIR)
 
 # Autoconf variables and arguments
-CONFIGURE_ENV  := PKG_CONFIG_LIBDIR="$(PKGDIR)" CC="$(CC)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+PC_PATH        := $(shell pkg-config --variable pc_path pkg-config)
+CONFIGURE_ENV  := PKG_CONFIG_LIBDIR="$(PKGDIR):$(PC_PATH)" CC="$(CC)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 CONFIGURE_ARGS := --prefix="$(PREFIX)" --libdir="$(PREFIX)/lib"
 
 # CMake options
@@ -270,9 +271,15 @@ OPTS_OPENAL := \
 	-DALSOFT_EXAMPLES=OFF \
 	-DALSOFT_EMBED_HRTF_DATA=ON
 
+# FluidSynth has some issues to link against mkxp-z
 OPTS_FLUIDSYNTH := \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DLIB_SUFFIX="" \
+	-Denable-alsa=OFF \
+	-Denable-jack=OFF \
+	-Denable-portaudio=OFF \
+	-Denable-pulseaudio=OFF \
+	-Denable-dbus=OFF \
 	-Denable-sdl2=OFF \
 	-Denable-readline=OFF
 
