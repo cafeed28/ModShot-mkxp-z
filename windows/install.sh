@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [[ -z "$MESON_SOURCE_ROOT" || -z "$MESON_BUILD_ROOT" || -z "$MESON_INSTALL_PREFIX" ]]; then
   echo "This script can be only used in Meson build system." >&2

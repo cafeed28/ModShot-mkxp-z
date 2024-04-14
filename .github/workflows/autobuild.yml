@@ -1,293 +1,222 @@
-# I have no idea what I'm doing
-name: Automatic Build
+name: Build
 
 on:
   push:
-    branches: ['dev', 'autobuild']
-    paths-ignore: ['*.md', '*.json', '*.png']
+    branches:
+    - master
+    - dev
+    paths:
+    - '.github/workflows/autobuild.yml'
+    - 'assets/**'
+    - 'binding/**'
+    - 'linux/**'
+    - 'macos/**'
+    - 'shader/**'
+    - 'src/**'
+    - 'steamshim/**'
+    - 'windows/**'
+    - 'meson.build'
+    - 'meson_options.txt'
+
   pull_request:
-    branches: ['dev', 'autobuild']
-    paths-ignore: ['*.md', '*.json', '*.png']
+    branches:
+    - master
+    - dev
+    paths:
+    - '.github/workflows/autobuild.yml'
+    - 'assets/**'
+    - 'binding/**'
+    - 'linux/**'
+    - 'macos/**'
+    - 'shader/**'
+    - 'src/**'
+    - 'steamshim/**'
+    - 'windows/**'
+    - 'meson.build'
+    - 'meson_options.txt'
+
+  workflow_dispatch:
 
 jobs:
   build-windows:
-    name: Windows
+    name: Windows (${{ matrix.sys }})
     runs-on: windows-latest
-    steps:
-      - uses: benjlevesque/short-sha@v2.2
-        id: short-sha
-        with:
-          length: 7
 
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: mingw64
-          install: >-
-            base-devel
-            git
-            ruby
-            vim
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-meson
-            mingw-w64-x86_64-autotools
-            mingw-w64-x86_64-gcc
-
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            windows/build-mingw64
-            windows/downloads
-          key: win-${{ hashFiles('windows/Makefile') }}
-
-      - name: Build all dependencies
-        shell: msys2 {0}
-        run: |
-          cd windows
-          make
-
-      - name: Build exe
-        shell: msys2 {0}
-        run: |
-          source windows/vars.sh
-          meson build
-          cd build
-          ninja
-          strip ./mkxp-z.exe
-
-      - name: Prepare archive
-        shell: msys2 {0}
-        run: |
-          mkdir build/artifact
-          cd build/artifact
-          cp /mingw64/bin/zlib1.dll .
-          cp ../../windows/build-mingw64/bin/x64-msvcrt-ruby310.dll .
-          cp -r ../../windows/build-mingw64/lib/ruby/3.1.0 .
-          mv ./3.1.0 ./stdlib
-          cp ../mkxp-z.exe .
-          cp ../../mkxp.json .
-          cp -r ../../scripts .
-          cp ../../assets/LICENSE.mkxp-z-with-https.txt .
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: mkxp-z.windows.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
-          path: |
-            build/artifact/*.dll
-            build/artifact/*.exe
-            build/artifact/mkxp.json
-            build/artifact/LICENSE.mkxp-z-with-https.txt
-            build/artifact/scripts/
-            build/artifact/stdlib/
-
-  build-linux-native:
-    name: Ubuntu 22.04 x86_64
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: benjlevesque/short-sha@v2.2
-        id: short-sha
-        with:
-          length: 7
-
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        with:
-          path: |
-            linux/build-x86_64
-            linux/downloads
-          key: lin-x86_64-${{ hashFiles('linux/Makefile') }}
-
-      - name: Install apt dependencies
-        run: |
-          sudo apt update
-          sudo apt install git build-essential cmake meson autoconf automake libtool pkg-config ruby bison zlib1g-dev libbz2-dev xorg-dev libgl1-mesa-dev libasound2-dev libpulse-dev -y
-
-      - name: Build everything else
-        run: |
-          cd linux
-          make
-
-      - name: Build executable
-        run: |
-          source linux/vars.sh
-          meson build --bindir=. --prefix=$GITHUB_WORKSPACE/build/local
-          cd build
-          ninja
-          ninja install
-
-      - name: Prepare archive
-        run: |
-          cd build/local
-          cp -r ../../linux/build-x86_64/lib/ruby/3.1.0 .
-          mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
-          cp -r ../../scripts .
-          cp ../../assets/LICENSE.mkxp-z-with-https.txt .
-          cd ..
-          zip -r local.zip local
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: mkxp-z.linux.x86_64.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
-          path: build/local.zip
-
-  build-linux-cross:
-    name: Ubuntu 22.04 ${{matrix.arch_mkxpz}}
-    runs-on: ubuntu-22.04
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - arch_mkxpz: armv6
-            arch_debian: armhf
-            arch_gcc: arm-linux-gnueabihf
-            # GCC doesn't like the -mcpu flags, TODO investigate.
-            experimental: true
-          - arch_mkxpz: armv7
-            arch_debian: armhf
-            arch_gcc: arm-linux-gnueabihf
-            # GCC doesn't like the -mcpu flags, TODO investigate.
-            experimental: true
-          - arch_mkxpz: armv7-neon
-            arch_debian: armhf
-            arch_gcc: arm-linux-gnueabihf
-            experimental: false
-          - arch_mkxpz: arm64
-            arch_debian: arm64
-            arch_gcc: aarch64-linux-gnu
-            experimental: false
-          - arch_mkxpz: power8le
-            arch_debian: ppc64el
-            arch_gcc: powerpc64le-linux-gnu
-            experimental: false
-          - arch_mkxpz: power9le
-            arch_debian: ppc64el
-            arch_gcc: powerpc64le-linux-gnu
-            experimental: false
-          - arch_mkxpz: riscv64
-            arch_debian: riscv64
-            arch_gcc: riscv64-linux-gnu
-            # libjxl/highway compatibility issue, TODO check if fixed in later SDL_image.
-            # Also probably an OpenSSL arch name issue.
-            experimental: true
+        - { sys: mingw32, env: i686, ruby-prefix: msvcrt }
+        - { sys: mingw64, env: x86_64, ruby-prefix: x64-msvcrt }
+        - { sys: ucrt64, env: ucrt-x86_64, ruby-prefix: x64-ucrt }
+
     steps:
-      - uses: benjlevesque/short-sha@v2.2
-        id: short-sha
+      - name: Shorten commit SHA
+        id: shorten-sha
+        uses: benjlevesque/short-sha@v3.0
         with:
           length: 7
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - name: Setup MSYS2 (${{ matrix.sys }})
+        uses: msys2/setup-msys2@v2
         with:
-          path: |
-            linux/build-${{matrix.arch_mkxpz}}
-            linux/downloads
-          key: lin-${{matrix.arch_mkxpz}}-${{ hashFiles('linux/Makefile', 'linux/target*', 'linux/toolchain*') }}
+          msystem: ${{ matrix.sys }}
+          install: >-
+            base-devel
+            git
+            vim
+            ruby
+            mingw-w64-${{ matrix.env }}-gcc
+            mingw-w64-${{ matrix.env }}-autotools
+            mingw-w64-${{ matrix.env }}-cmake
+            mingw-w64-${{ matrix.env }}-meson
 
-      - name: Install apt dependencies
-        run: |
-          sudo sed -i "s/deb /deb [arch=amd64] /g" /etc/apt/sources.list
-          sudo dpkg --add-architecture ${{matrix.arch_debian}}
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy main restricted" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy-updates main restricted" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy universe" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy-updates universe" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy multiverse" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy-updates multiverse" | sudo tee -a /etc/apt/sources.list
-          echo "deb [arch=${{matrix.arch_debian}}] http://ports.ubuntu.com/ jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-          sudo apt update
-          sudo apt install git build-essential cmake meson autoconf automake libtool pkg-config ruby bison -y
-          sudo apt install libdmx-dev:${{matrix.arch_debian}} libfontenc-dev:${{matrix.arch_debian}} libfs-dev:${{matrix.arch_debian}} libice-dev:${{matrix.arch_debian}} libsm-dev:${{matrix.arch_debian}} libx11-dev:${{matrix.arch_debian}} libxau-dev:${{matrix.arch_debian}} libxaw7-dev:${{matrix.arch_debian}} libxcomposite-dev:${{matrix.arch_debian}} libxcursor-dev:${{matrix.arch_debian}} libxdamage-dev:${{matrix.arch_debian}} libxdmcp-dev:${{matrix.arch_debian}} libxext-dev:${{matrix.arch_debian}} libxfixes-dev:${{matrix.arch_debian}} libxfont-dev:${{matrix.arch_debian}} libxft-dev:${{matrix.arch_debian}} libxi-dev:${{matrix.arch_debian}} libxinerama-dev:${{matrix.arch_debian}} libxkbfile-dev:${{matrix.arch_debian}} libxmu-dev:${{matrix.arch_debian}} libxmuu-dev:${{matrix.arch_debian}} libxpm-dev:${{matrix.arch_debian}} libxrandr-dev:${{matrix.arch_debian}} libxrender-dev:${{matrix.arch_debian}} libxres-dev:${{matrix.arch_debian}} libxss-dev:${{matrix.arch_debian}} libxt-dev:${{matrix.arch_debian}} libxtst-dev:${{matrix.arch_debian}} libxv-dev:${{matrix.arch_debian}} libxvmc-dev:${{matrix.arch_debian}} libxxf86dga-dev:${{matrix.arch_debian}} libxxf86vm-dev:${{matrix.arch_debian}} x11proto-dev:${{matrix.arch_debian}} xserver-xorg-dev:${{matrix.arch_debian}} xtrans-dev:${{matrix.arch_debian}} -y
-          sudo apt install gcc-${{matrix.arch_gcc}} g++-${{matrix.arch_gcc}} zlib1g-dev:${{matrix.arch_debian}} libbz2-dev:${{matrix.arch_debian}} libgl1-mesa-dev:${{matrix.arch_debian}} libasound2-dev:${{matrix.arch_debian}} libpulse-dev:${{matrix.arch_debian}} -y
+      - name: Dependencies cache
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: windows/build-${{ matrix.sys }}
+          key: windows-${{ matrix.sys }}-${{ hashFiles('windows/Makefile') }}
 
-      - name: Build everything else
+      - name: Build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}/windows
+        shell: msys2 {0}
+        run: make LTO=0
+
+      - name: Build mkxp-z
+        shell: msys2 {0}
         run: |
-          cd linux
-          source target-${{matrix.arch_mkxpz}}.sh
+          source windows/vars.sh
+          meson setup build --prefix="$GITHUB_WORKSPACE/build/artifact"
+          meson compile -Cbuild
+          meson install -Cbuild
+
+      - name: Prepare artifact
+        working-directory: ${{ github.workspace }}/build/artifact
+        shell: msys2 {0}
+        run: |
+          strip ./*.exe
+          strip ./*.dll
+          strip ./rubylib/3.1.0/*/*.so
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mkxp-z_Windows_${{ matrix.sys }}_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          path: build/artifact
+
+  build-ubuntu-20:
+    name: Ubuntu 20.04 (x86_64)
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Shorten commit SHA
+        id: shorten-sha
+        uses: benjlevesque/short-sha@v3.0
+        with:
+          length: 7
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install git vim wget patchelf ruby python3 python3-pip build-essential autoconf automake libtool pkg-config cmake bison libpulse-dev libasound2-dev libjack-dev portaudio19-dev libsamplerate0-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libwayland-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev fcitx-libs-dev
+          sudo python3 -m pip install meson ninja
+
+      # Required on Ubuntu 20.04 for libffi configuration
+      - name: Install Autoconf 2.71
+        working-directory: ${{ runner.temp }}
+        run: |
+          wget https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.xz
+          tar -xf autoconf-2.71.tar.xz
+          cd autoconf-2.71
+          ./configure
           make
+          sudo make install
 
-      - name: Build executable
-        run: |
-          source linux/target-${{matrix.arch_mkxpz}}.sh
-          source linux/vars.sh
-          meson setup --cross-file linux/$ARCH_MESON_TOOLCHAIN build --bindir=. --prefix=$GITHUB_WORKSPACE/build/local
-          cd build
-          ninja
-          ninja install
-          cp "$MKXPZ_PREFIX/lib/$("$ARCH_CONFIGURE-objdump" -p local/mkxp-z* | grep -i NEEDED | grep -Eo 'libruby.so.[0-9\.]+')" local/lib*/
-          cp "/usr/lib/$ARCH_CONFIGURE/$("$ARCH_CONFIGURE-objdump" -p local/lib*/libruby.so* | grep -i NEEDED | grep -Eo 'libcrypt.so.[0-9\.]+')" local/lib*/
-
-      - name: Prepare archive
-        run: |
-          cd build/local
-          cp -r ../../linux/build-${{matrix.arch_mkxpz}}/lib/ruby/3.1.0 .
-          mv ./3.1.0 ./stdlib
-          cp ../../mkxp.json .
-          cp -r ../../scripts .
-          cp ../../assets/LICENSE.mkxp-z-with-https.txt .
-          cd ..
-          zip -r local.zip local
-
-      - uses: actions/upload-artifact@v3
+      - name: Dependencies cache
+        id: cache-deps
+        uses: actions/cache@v4
         with:
-          name: mkxp-z.linux.${{matrix.arch_mkxpz}}.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
-          path: build/local.zip
+          path: linux/build-x86_64
+          key: linux-x86_64-${{ hashFiles('linux/Makefile') }}
+
+      - name: Build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}/linux
+        run: make LTO=0
+
+      - name: Build mkxp-z
+        run: |
+          source linux/vars.sh
+          meson build --prefix="$GITHUB_WORKSPACE/build/artifact"
+          meson compile -Cbuild
+          meson install -Cbuild
+
+      - name: Prepare artifact
+        working-directory: ${{ github.workspace }}/build/artifact
+        run: |
+          strip ./mkxp-z.x86_64
+          strip ./lib64/libruby.so.3.1
+          strip ./rubylib/3.1.0/*/*.so
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mkxp-z_Ubuntu_20.04_x86-64_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          path: build/artifact
 
   build-macos:
     name: macOS
     runs-on: macos-latest
+
     steps:
-      - uses: benjlevesque/short-sha@v2.2
-        id: short-sha
+      - name: Shorten commit SHA
+        id: shorten-sha
+        uses: benjlevesque/short-sha@v3.0
         with:
           length: 7
 
-      - name: Remove pre-existing homebrew packages
-        run: brew remove --force $(brew list)
-
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - name: Install Homebrew packages
+        working-directory: ${{ github.workspace }}/macos/dependencies
+        run: brew bundle
+
+      - name: Dependencies cache
+        id: cache-deps
+        uses: actions/cache@v4
         with:
           path: |
-            macos/Dependencies/build-macosx-x86_64
-            macos/Dependencies/build-macosx-arm64
-            macos/Dependencies/build-macosx-universal
-            macos/Dependencies/downloads
-          key: mac-${{ hashFiles('macos/Dependencies/*.make', 'macos/Dependencies/*.sh') }}
+            macos/dependencies/build-x86_64
+            macos/dependencies/build-arm64
+            macos/dependencies/build-universal
+          key: macos-${{ hashFiles('macos/dependencies/*.make', 'macos/dependencies/*.sh') }}
 
-      - name: Install Homebrew tools
+      - name: Build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        working-directory: ${{ github.workspace }}/macos
+        run: ./setup.command
+
+      - name: Build mkxp-z
+        working-directory: ${{ github.workspace }}/macos
+        run: xcodebuild -project mkxp-z.xcodeproj -scheme "Universal" -configuration "Release" -derivedDataPath "$GITHUB_WORKSPACE/build"
+
+      - name: Prepare artifact
+        working-directory: ${{ github.workspace }}/build/Build/Products/Release
         run: |
-          cd macos/Dependencies
-          brew bundle
+          cp -v ../../../../assets/LICENSE.mkxp-z-with-https.txt Universal/
+          ditto -Vkc --sequesterRsrc Universal mkxp-z.zip
 
-      - name: Build all dependencies
-        run: |
-          cd macos/Dependencies
-          ./setup.sh
-
-      - name: Build app
-        run: |
-          cd macos
-          xcodebuild -project mkxp-z.xcodeproj -configuration "Release" -scheme "Universal" -derivedDataPath "$GITHUB_WORKSPACE/build"
-
-      - name: Compress app
-        run: |
-          cd build/Build/Products/Release
-          cp ../../../../assets/LICENSE.mkxp-z-with-https.txt ./Z-universal.app/
-          ditto -c -k --sequesterRsrc --keepParent Z-universal.app Z-universal.app.zip
-
-      - name: Upload archive
-        uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: mkxp-z.macos.${{github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name}}-${{steps.short-sha.outputs.sha}}
-          path: build/Build/Products/Release/Z-universal.app.zip
+          name: mkxp-z_macOS_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          path: build/Build/Products/Release/mkxp-z.zip
