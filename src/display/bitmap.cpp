@@ -983,8 +983,8 @@ static bool shrinkRects(float &sourcePos, float &sourceLen, const int &sBitmapLe
     else
     {
         // Ensure the source rect has positive dimensions, for blitting from mega surfaces
-        destPos = (destLen > 0 == sourceLen > 0) ? dStart : dEnd;
-        destLen = (destLen > 0 == sourceLen > 0) ? dLength : -dLength;
+        destPos = ((destLen > 0) == (sourceLen > 0)) ? dStart : dEnd;
+        destLen = ((destLen > 0) == (sourceLen > 0)) ? dLength : -dLength;
         sourcePos = sStart;
         sourceLen = sLength;
     }

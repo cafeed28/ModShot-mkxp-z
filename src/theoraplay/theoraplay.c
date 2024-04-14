@@ -10,6 +10,12 @@
 //  libtheora-1.1.1/examples/player_example.c, but this is all my own
 //  code.
 
+#ifndef _WIN32
+// Defines for usleep(3) compatibility
+#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
