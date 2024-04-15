@@ -563,8 +563,8 @@ $(DLDIR)/harfbuzz/$(BDIR)/Makefile: $(DLDIR)/harfbuzz/CMakeLists.txt
 	@cd $(DLDIR)/harfbuzz; $(CMAKE) -DHB_BUILD_SUBSET=NO
 
 $(DLDIR)/harfbuzz/CMakeLists.txt:
-	@printf "\e[94m=>\e[0m \e[36mDownloading HarfBuzz 8.3.0...\e[0m\n"
-	@$(GIT) -b 8.3.0 https://github.com/harfbuzz/harfbuzz $(DLDIR)/harfbuzz
+	@printf "\e[94m=>\e[0m \e[36mDownloading HarfBuzz 8.4.0...\e[0m\n"
+	@$(GIT) -b 8.4.0 https://github.com/harfbuzz/harfbuzz $(DLDIR)/harfbuzz
 
 # ---------------------------------- FreeType ----------------------------------
 freetype: init zlib libpng harfbuzz $(LIBDIR)/libfreetype.a
@@ -618,8 +618,8 @@ $(DLDIR)/sdl2/$(BDIR)/Makefile: $(DLDIR)/sdl2/CMakeLists.txt
 	@cd $(DLDIR)/sdl2; $(CMAKE) $(OPTS_SDL)
 
 $(DLDIR)/sdl2/CMakeLists.txt:
-	@printf "\e[94m=>\e[0m \e[36mDownloading SDL2 2.30.1...\e[0m\n"
-	@$(GIT) -b release-2.30.1 https://github.com/libsdl-org/SDL $(DLDIR)/sdl2
+	@printf "\e[94m=>\e[0m \e[36mDownloading SDL2 2.30.2...\e[0m\n"
+	@$(GIT) -b release-2.30.2 https://github.com/libsdl-org/SDL $(DLDIR)/sdl2
 
 # --------------------------------- SDL2_image ---------------------------------
 sdl2_image: init sdl2 libpng libjpeg $(LIBDIR)/libSDL2_image.a
