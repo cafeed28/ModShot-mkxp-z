@@ -28,6 +28,14 @@ option(
 )
 
 option(
+    'require_nanosleep',
+    type: 'combo',
+    choices: ['auto', 'true', 'false'],
+    value: 'auto',
+    description: 'Whether use nanosleep for ticking framerate. Affects to framerate steadiness on Windows.'
+)
+
+option(
     'appimagetool',
     type: 'string',
     value: '',

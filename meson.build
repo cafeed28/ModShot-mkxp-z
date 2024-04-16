@@ -94,9 +94,16 @@ mkxp_cflags += [
     '-DMKXPZ_BUILD_MESON',
     '-DMKXPZ_VERSION="@0@"'.format(meson.project_version()),
     '-DMKXPZ_GIT_HASH="@0@"'.format(git_hash),
-    '-DMKXPZ_INIT_GL_LATER',
-    '-DHAVE_NANOSLEEP'
+    '-DMKXPZ_INIT_GL_LATER'
 ]
+
+if get_option('require_nanosleep') == 'auto'
+    if host_system != 'windows'
+        mkxp_cflags += '-DMKXPZ_NANOSLEEP'
+    endif
+elif get_option('require_nanosleep') == 'true'
+    mkxp_cflags += '-DMKXPZ_NANOSLEEP'
+endif
 
 # Suppress compiler warnings
 # TODO: Reduce no-warning flags and fix warnings in code sources
