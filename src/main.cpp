@@ -395,7 +395,9 @@ int main(int argc, char *argv[]) {
             mkxp_fs::setCurrentDirectory(dataDirStr.c_str());
             Debug() << "Current directory set to" << dataDirStr;
             conf.read(argc, argv);
-            conf.readGameINI();
+            
+            if (conf.windowTitle.empty())
+                conf.windowTitle = conf.game.title;
         }
     }
 #endif
@@ -452,7 +454,12 @@ int main(int argc, char *argv[]) {
     rtData.bindingUpdateMsg.post(loadBindings(conf));
     
 #ifdef MKXPZ_BUILD_XCODE
-    // Create Touch Bar
+    if (conf.manualFolderSelect) {
+        /* Update window title */
+        eventThread.requestWindowRename(conf.windowTitle.c_str());
+    }
+    
+    /* Create Touch Bar */
     initTouchBar(win, conf);
 #endif
 
