@@ -308,7 +308,6 @@
     // "dataPathApp": "MyGameName",
 
     // Sets the game window icon from provided file path.
-    // Only available on Linux platform at the moment.
     // (Default: none)
     // 
     // "iconPath": "path/to/icon.png",

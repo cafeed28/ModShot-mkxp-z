@@ -181,23 +181,37 @@ static void showInitError(const std::string &msg) {
 }
 
 static void setupWindowIcon(const Config &conf, SDL_Window *win) {
-  SDL_RWops *iconSrc;
+    SDL_RWops *iconIO = NULL;
 
-  if (conf.iconPath.empty())
+    if (!conf.iconPath.empty()) {
+        iconIO = SDL_RWFromFile(conf.iconPath.c_str(), "rb");
+
+        if (iconIO == NULL) {
+            Debug() << "Unable to open icon file:" << SDL_GetError();
+            return;
+        }
+    } else {
+        /* Windows and macOS have their own native ways of dealing
+         * with default window icon; don't interfering with them */
+#if !defined(__WIN32__) && !defined(MKXPZ_BUILD_XCODE)
 #ifndef MKXPZ_BUILD_XCODE
-    iconSrc = SDL_RWFromConstMem(___assets_icon_png, ___assets_icon_png_len);
+        iconIO = SDL_RWFromConstMem(___assets_icon_png, ___assets_icon_png_len);
 #else
-    iconSrc = SDL_RWFromFile(mkxp_fs::getPathForAsset("icon", "png").c_str(), "rb");
+        iconIO = SDL_RWFromFile(mkxp_fs::getPathForAsset("icon", "png").c_str(), "rb");
 #endif
-  else
-    iconSrc = SDL_RWFromFile(conf.iconPath.c_str(), "rb");
+#endif
+    }
 
-  SDL_Surface *iconImg = IMG_Load_RW(iconSrc, SDL_TRUE);
+    if (iconIO != NULL) {
+        SDL_Surface *icon = IMG_Load_RW(iconIO, SDL_TRUE);
 
-  if (iconImg) {
-    SDL_SetWindowIcon(win, iconImg);
-    SDL_FreeSurface(iconImg);
-  }
+        if (icon) {
+            SDL_SetWindowIcon(win, icon);
+            SDL_FreeSurface(icon);
+        } else {
+            Debug() << "Unable to load icon:" << SDL_GetError();
+        }
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -402,13 +416,7 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
-    /* OSX and Windows have their own native ways of
-     * dealing with icons; don't interfere with them */
-#ifdef __LINUX__
     setupWindowIcon(conf, win);
-#else
-    (void)setupWindowIcon;
-#endif
 
     ALCdevice *alcDev = alcOpenDevice(0);
 
