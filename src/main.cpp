@@ -222,23 +222,6 @@ int main(int argc, char *argv[]) {
     SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
 #endif
 
-    /* Print welcoming text to console output */
-    std::string mkxpz_version(MKXPZ_VERSION);
-    std::string git_hash;
-
-#ifdef MKXPZ_BUILD_XCODE
-    if (!getPlistValue("MKXPGitHash").empty())
-        git_hash = getPlistValue("MKXPGitHash");
-    else
-        git_hash = "0000000000000000000000000000000000000000";
-#else
-    git_hash = MKXPZ_GIT_HASH;
-#endif
-
-    std::string str_version = mkxpz_version + " (" + git_hash.substr(0, 7) + ")";
-
-    Debug() << "Starting mkxp-z version " + str_version;
-
     /* initialize SDL first */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_TIMER) < 0) {
       showInitError(std::string("Error initializing SDL: ") + SDL_GetError());
@@ -282,6 +265,25 @@ int main(int argc, char *argv[]) {
       }
     }
 #endif
+
+    /* Print welcoming text to console output */
+    {
+        std::string mkxpz_version(MKXPZ_VERSION);
+        std::string git_hash;
+
+    #ifdef MKXPZ_BUILD_XCODE
+        if (!getPlistValue("MKXPGitHash").empty())
+            git_hash = getPlistValue("MKXPGitHash");
+        else
+            git_hash = "0000000000000000000000000000000000000000";
+    #else
+        git_hash = MKXPZ_GIT_HASH;
+    #endif
+
+        std::string str_version = mkxpz_version + " (" + git_hash.substr(0, 7) + ")";
+
+        Debug() << "Starting mkxp-z version " + str_version;
+    }
 
 #ifdef MKXPZ_STEAM
     if (!STEAMSHIM_init()) {
