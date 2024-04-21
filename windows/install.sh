@@ -59,7 +59,7 @@ function make_prefix {
   cp -pur "$MKXPZ_PREFIX/lib/ruby/3.1.0/." "$INSTALL/rubylib/3.1.0/"
 
   # Copy GPL-3.0 license file
-  if [[ -n "$GPLV3" ]]; then
+  if [[ -n "$GPLV3" ]] && [[ "$GPLV3" == "1" ]]; then
     echo "Installing LICENSE.mkxp-z-with-https.txt..."
     cp -pu "$SOURCE/assets/LICENSE.mkxp-z-with-https.txt" "$INSTALL/"
   fi

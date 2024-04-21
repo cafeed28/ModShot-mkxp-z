@@ -85,7 +85,7 @@ function make_prefix {
   patchelf "$INSTALL/rubylib/3.1.0"/*/*.so --remove-rpath
 
   # Copy GPL-3.0 license file
-  if [[ -n "$GPLV3" ]]; then
+  if [[ -n "$GPLV3" ]] && [[ "$GPLV3" == "1" ]]; then
     echo "Installing LICENSE.mkxp-z-with-https.txt..."
     cp -pu "$SOURCE/assets/LICENSE.mkxp-z-with-https.txt" "$INSTALL/"
   fi
@@ -195,7 +195,7 @@ function make_appimage {
   fi
 
   # Copy GPL-3.0 license file
-  if [[ "$GPLV3" ]]; then
+  if [[ -n "$GPLV3" ]] && [[ "$GPLV3" == "1" ]]; then
     echo "Installing LICENSE.mkxp-z-with-https.txt..."
     cp -pu "$SOURCE/assets/LICENSE.mkxp-z-with-https.txt" "$INSTALL/"
   fi
