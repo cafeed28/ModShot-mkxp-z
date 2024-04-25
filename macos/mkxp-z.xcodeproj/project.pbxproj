@@ -505,14 +505,18 @@
 		96573E7D27913B46002C3E77 /* TouchBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96573E7A27913B46002C3E77 /* TouchBar.mm */; };
 		96573E7E27913B46002C3E77 /* TouchBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96573E7A27913B46002C3E77 /* TouchBar.mm */; };
 		96573E7F27913B46002C3E77 /* TouchBar.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96573E7A27913B46002C3E77 /* TouchBar.mm */; };
-		96573E81279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
-		96573E82279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
-		96573E83279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
-		96573E84279152DC002C3E77 /* TouchBar.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* TouchBar.xcassets */; };
+		96573E81279152DC002C3E77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* Assets.xcassets */; };
+		96573E82279152DC002C3E77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* Assets.xcassets */; };
+		96573E83279152DC002C3E77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* Assets.xcassets */; };
+		96573E84279152DC002C3E77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96573E80279152DC002C3E77 /* Assets.xcassets */; };
 		96D8EDD128728DCE00A331EA /* gamecontrollerdb.txt in Resources */ = {isa = PBXBuildFile; fileRef = 96D8EDD028728DCA00A331EA /* gamecontrollerdb.txt */; };
 		9DBD4B93938DE5373F0B275B /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B4BA780D4407F24279700 /* libbrotlidec-static.a */; };
 		ADD04C5294116C82CB009D8A /* libbrotlicommon-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 293E462B94F6FA33CCB8B20C /* libbrotlicommon-static.a */; };
 		AE974950A93FC9A717E13D28 /* libbrotlidec-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C254B088D8B18C7E957DE30 /* libbrotlidec-static.a */; };
+		B42A26542BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B42A26532BDA4FFD00967CCD /* AudioUnit.framework */; };
+		B42A26552BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B42A26532BDA4FFD00967CCD /* AudioUnit.framework */; };
+		B42A26562BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B42A26532BDA4FFD00967CCD /* AudioUnit.framework */; };
+		B42A26572BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B42A26532BDA4FFD00967CCD /* AudioUnit.framework */; };
 		B46E07FC2BB35027007D22C3 /* libharfbuzz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B46E07FB2BB35027007D22C3 /* libharfbuzz.a */; };
 		B46E07FD2BB35027007D22C3 /* libharfbuzz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B46E07FB2BB35027007D22C3 /* libharfbuzz.a */; };
 		B46E07FF2BB351E3007D22C3 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B46E07FE2BB351E3007D22C3 /* libz.a */; };
@@ -1141,9 +1145,10 @@
 		96563592279A5B74003D6A75 /* theoraplay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = theoraplay.c; sourceTree = "<group>"; };
 		96573E7A27913B46002C3E77 /* TouchBar.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = TouchBar.mm; path = views/TouchBar.mm; sourceTree = "<group>"; };
 		96573E7B27913B46002C3E77 /* TouchBar.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; name = TouchBar.h; path = views/TouchBar.h; sourceTree = "<group>"; };
-		96573E80279152DC002C3E77 /* TouchBar.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = TouchBar.xcassets; path = views/TouchBar.xcassets; sourceTree = "<group>"; };
+		96573E80279152DC002C3E77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = views/Assets.xcassets; sourceTree = "<group>"; };
 		96D8EDD028728DCA00A331EA /* gamecontrollerdb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = gamecontrollerdb.txt; path = ../assets/gamecontrollerdb.txt; sourceTree = "<group>"; };
 		A8AA4AE49BB66C97EFAE3055 /* libbrotlicommon-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libbrotlicommon-static.a"; path = "dependencies/build-universal/lib/libbrotlicommon-static.a"; sourceTree = "<group>"; };
+		B42A26532BDA4FFD00967CCD /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		B46E07FB2BB35027007D22C3 /* libharfbuzz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libharfbuzz.a; path = "dependencies/build-x86_64/lib/libharfbuzz.a"; sourceTree = "<group>"; };
 		B46E07FE2BB351E3007D22C3 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "dependencies/build-x86_64/lib/libz.a"; sourceTree = "<group>"; };
 		B46E08042BB3569E007D22C3 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = "dependencies/build-x86_64/lib/libjpeg.a"; sourceTree = "<group>"; };
@@ -1174,6 +1179,7 @@
 				3B1C23CA25A19C600075EF5D /* AppKit.framework in Frameworks */,
 				3B1C23D225A19C600075EF5D /* IOKit.framework in Frameworks */,
 				3B1C23DD25A19C600075EF5D /* AudioToolbox.framework in Frameworks */,
+				B42A26552BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */,
 				3B1C23D425A19C600075EF5D /* Carbon.framework in Frameworks */,
 				3B1C23D625A19C600075EF5D /* Metal.framework in Frameworks */,
 				3B1C23DE25A19C600075EF5D /* Foundation.framework in Frameworks */,
@@ -1221,6 +1227,7 @@
 				3BBE87D82705A73400A574AE /* AppKit.framework in Frameworks */,
 				3BBE87E02705A73400A574AE /* IOKit.framework in Frameworks */,
 				3BBE87EB2705A73400A574AE /* AudioToolbox.framework in Frameworks */,
+				B42A26572BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */,
 				3BBE87E12705A73400A574AE /* Carbon.framework in Frameworks */,
 				3BBE87E22705A73400A574AE /* Metal.framework in Frameworks */,
 				3BBE87EC2705A73400A574AE /* Foundation.framework in Frameworks */,
@@ -1268,6 +1275,7 @@
 				3BC65DEF2584F3AD0063AFF1 /* AppKit.framework in Frameworks */,
 				3BC65DEB2584F3AD0063AFF1 /* IOKit.framework in Frameworks */,
 				3BC65DFD2584F3AD0063AFF1 /* AudioToolbox.framework in Frameworks */,
+				B42A26562BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */,
 				3BC65DED2584F3AD0063AFF1 /* Carbon.framework in Frameworks */,
 				3BC65DF42584F3AD0063AFF1 /* Metal.framework in Frameworks */,
 				3BC65DFF2584F3AD0063AFF1 /* Foundation.framework in Frameworks */,
@@ -1315,6 +1323,7 @@
 				3B1C233025A16CB20075EF5D /* AppKit.framework in Frameworks */,
 				3BD2B6E72565AEC0003DAD8A /* IOKit.framework in Frameworks */,
 				3BA08E9B256638C900449CFF /* AudioToolbox.framework in Frameworks */,
+				B42A26542BDA4FFD00967CCD /* AudioUnit.framework in Frameworks */,
 				3B10EC5D2568D40C00372D13 /* Carbon.framework in Frameworks */,
 				3B10EC5F2568D40C00372D13 /* Metal.framework in Frameworks */,
 				3BD2B6F12565AEC0003DAD8A /* Foundation.framework in Frameworks */,
@@ -1700,7 +1709,6 @@
 				3B3F7D3025B1A79F00EA5F1C /* SettingsMenuController.h */,
 				96573E7A27913B46002C3E77 /* TouchBar.mm */,
 				96573E7B27913B46002C3E77 /* TouchBar.h */,
-				96573E80279152DC002C3E77 /* TouchBar.xcassets */,
 				3B3F7D1725B19DEC00EA5F1C /* settingsmenu.xib */,
 				3B480E9325DCBDD6001686B4 /* sdl_codes.h */,
 			);
@@ -1811,6 +1819,7 @@
 				3BE081582568D3A60006849F /* AppKit.framework */,
 				3BD2B47A256534BA003DAD8A /* IOKit.framework */,
 				3BD2B46925651C1B003DAD8A /* AudioToolbox.framework */,
+				B42A26532BDA4FFD00967CCD /* AudioUnit.framework */,
 				3BE081552568D3A60006849F /* Carbon.framework */,
 				3BE081542568D3A60006849F /* Metal.framework */,
 				3BD2B46725651C00003DAD8A /* Foundation.framework */,
@@ -1855,6 +1864,7 @@
 			isa = PBXGroup;
 			children = (
 				3B10EC8B2568E79800372D13 /* Shaders */,
+				96573E80279152DC002C3E77 /* Assets.xcassets */,
 				3BDB23E22564546E00C4A63D /* icon.icns */,
 				3B10EC832568E78400372D13 /* icon.png */,
 				3B10EC842568E78400372D13 /* liberation.ttf */,
@@ -2106,7 +2116,7 @@
 			files = (
 				3B1C23E725A19C600075EF5D /* icon.icns in Resources */,
 				3B3F7D2625B19F7000EA5F1C /* settingsmenu.xib in Resources */,
-				96573E84279152DC002C3E77 /* TouchBar.xcassets in Resources */,
+				96573E84279152DC002C3E77 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2125,7 +2135,7 @@
 			files = (
 				3BBE87F52705A73400A574AE /* icon.icns in Resources */,
 				3BBE87F62705A73400A574AE /* settingsmenu.xib in Resources */,
-				96573E83279152DC002C3E77 /* TouchBar.xcassets in Resources */,
+				96573E83279152DC002C3E77 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2135,7 +2145,7 @@
 			files = (
 				3BC65E0E2584F3AD0063AFF1 /* icon.icns in Resources */,
 				3B3F7D1D25B19F6E00EA5F1C /* settingsmenu.xib in Resources */,
-				96573E81279152DC002C3E77 /* TouchBar.xcassets in Resources */,
+				96573E81279152DC002C3E77 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2145,7 +2155,7 @@
 			files = (
 				3BD2B6F92565AEC0003DAD8A /* icon.icns in Resources */,
 				3B3F7D2025B19F6E00EA5F1C /* settingsmenu.xib in Resources */,
-				96573E82279152DC002C3E77 /* TouchBar.xcassets in Resources */,
+				96573E82279152DC002C3E77 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

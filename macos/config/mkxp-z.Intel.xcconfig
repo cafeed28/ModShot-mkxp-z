@@ -4,11 +4,8 @@ ARCHS = x86_64
 // Architecture (ABIs) list to exclude from building Intel targets
 EXCLUDED_ARCHS = i386
 
-// Architecture ABI name to include dependencies
-BUILD_ARCH = x86_64
-
 // Architecture ABI name to include Ruby platform headers
 RUBY_ARCH = x86_64
 
 // Include library serach paths
-LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/dependencies/build-$(BUILD_ARCH)/lib
+LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/dependencies/build-x86_64/lib

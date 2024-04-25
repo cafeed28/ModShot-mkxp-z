@@ -76,13 +76,6 @@ def make_universal()
     end
   end
 
-  # Create symlink of arm64 includes to Universal
-  if Dir.exist?(lib_arm64)
-    src_inc = lib_arm64.sub(/lib$/, "include")
-    dest_inc = dest.sub(/lib$/, "include")
-    FileUtils.ln_s(src_inc, dest_inc) if not Dir.exist?(dest_inc)
-  end
-
   # Create symlink of Ruby libraries to Universal
   lib_ruby = File.join(lib_arm64, "ruby")
   FileUtils.ln_s(lib_ruby, dest) if not Dir.exist?(File.join(dest, "ruby"))

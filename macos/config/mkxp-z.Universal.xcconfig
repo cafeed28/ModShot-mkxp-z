@@ -1,8 +1,6 @@
-// Architecture ABI name to include dependencies
-BUILD_ARCH = universal
-
 // Architecture ABI name to include Ruby platform headers
-RUBY_ARCH = arm64
+RUBY_ARCH[arch=x86_64] = x86_64
+RUBY_ARCH[arch=arm64] = arm64
 
 // Include library serach paths
-LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/dependencies/build-$(BUILD_ARCH)/lib
+LIBRARY_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/dependencies/build-universal/lib

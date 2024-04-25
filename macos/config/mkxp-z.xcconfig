@@ -8,4 +8,5 @@ MRI_VERSION = 3.1.0
 EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = $(inherited) dependencies build build-* prefix prefix-* DerivedData *.noindex
 
 // Dependencies directory for include and library paths
-DEPENDENCY_SEARCH_PATH = $(PROJECT_DIR)/dependencies/build-$(BUILD_ARCH)
+DEPENDENCY_SEARCH_PATH[arch=x86_64] = $(PROJECT_DIR)/dependencies/build-x86_64
+DEPENDENCY_SEARCH_PATH[arch=arm64] = $(PROJECT_DIR)/dependencies/build-arm64
