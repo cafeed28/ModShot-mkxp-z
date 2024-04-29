@@ -5,22 +5,18 @@
 //  Created by ゾロアーク on 1/15/21.
 //
 
-#ifndef SettingsMenuController_h
-#define SettingsMenuController_h
-
-#import <AppKit/AppKit.h>
+#ifndef MKXPZ_SETTINGSMENUCONTROLLER_H
+#define MKXPZ_SETTINGSMENUCONTROLLER_H
 
 #import <vector>
+#import <AppKit/AppKit.h>
 
 #import "eventthread.h"
 
-
 @interface SettingsMenu : NSViewController <NSTableViewDelegate, NSTableViewDataSource>
-
-+(SettingsMenu*)openWindow;
-
--(SettingsMenu*)setWindow:(NSWindow*)window;
--(SettingsMenu*)raise;
++(SettingsMenu *)openWindow;
+-(SettingsMenu *)setWindow:(NSWindow *)window;
+-(SettingsMenu *)raise;
 @end
 
-#endif /* SettingsMenuController_h */
+#endif // MKXPZ_SETTINGSMENUCONTROLLER_H

@@ -2,7 +2,7 @@
 ARCHS = x86_64
 
 // Architecture (ABIs) list to exclude from building Intel targets
-EXCLUDED_ARCHS = i386
+EXCLUDED_ARCHS = i386 arm64
 
 // Architecture ABI name to include Ruby platform headers
 RUBY_ARCH = x86_64

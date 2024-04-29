@@ -5,8 +5,8 @@
 //  Created by ゾロアーク on 2/16/21.
 //
 
-#ifndef sdl_codes_h
-#define sdl_codes_h
+#ifndef MKXPZ_SDL_CODES_H
+#define MKXPZ_SDL_CODES_H
 
 #include <SDL_scancode.h>
 
@@ -143,4 +143,4 @@ static const SDL_Scancode darwin_scancode_table[] = {
     /* 127 */   SDL_SCANCODE_POWER
 };
 
-#endif /* sdl_codes_h */
+#endif // MKXPZ_SDL_CODES_H

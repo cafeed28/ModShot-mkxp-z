@@ -1,6 +1,6 @@
 // If this is set to anything but 0, Steamshim will use RestartAppIfNecessary
 // instead of requiring steam_appid.txt
-STEAM_APP_ID = 0
+STEAM_APPID = 0
 
 // C/C++ defines for Steamshim target
-STEAMSHIM_DEFINES = GAME_LAUNCH_NAME=\"mkxp-z\" STEAM_APPID=$(STEAM_APP_ID)
+STEAMSHIM_DEFINES = GAME_LAUNCH_NAME=\"mkxp-z\" STEAM_APPID=$(STEAM_APPID)
