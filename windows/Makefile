@@ -830,8 +830,8 @@ $(DLDIR)/$(MSYS)/ruby/configure: $(DLDIR)/$(MSYS)/ruby/configure.ac
 	cd $(DLDIR)/$(MSYS)/ruby; autoreconf -i
 
 $(DLDIR)/$(MSYS)/ruby/configure.ac:
-	@printf "\e[94m=>\e[0m \e[36mDownloading Ruby 3.1.4...\e[0m\n"
-	@$(GIT) -b v3_1_4 https://github.com/ruby/ruby $(DLDIR)/$(MSYS)/ruby
+	@printf "\e[94m=>\e[0m \e[36mDownloading Ruby 3.1.5...\e[0m\n"
+	@$(GIT) -b v3_1_5 https://github.com/ruby/ruby $(DLDIR)/$(MSYS)/ruby
 
 # --------------------------- Ruby OpenSSL shared ext --------------------------
 ruby-ext-openssl: openssl ruby $(LIBDIR)/ruby/3.1.0/openssl

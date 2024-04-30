@@ -747,5 +747,5 @@ $(DLDIR)/$(ARCH)/ruby/configure: $(DLDIR)/$(ARCH)/ruby/configure.ac
 	cd $(DLDIR)/$(ARCH)/ruby; autoreconf -i
 
 $(DLDIR)/$(ARCH)/ruby/configure.ac:
-	@printf "\e[94m=>\e[0m \e[36mDownloading Ruby 3.1.4...\e[0m\n"
-	@$(GIT) -b v3_1_4 https://github.com/ruby/ruby $(DLDIR)/$(ARCH)/ruby
+	@printf "\e[94m=>\e[0m \e[36mDownloading Ruby 3.1.5...\e[0m\n"
+	@$(GIT) -b v3_1_5 https://github.com/ruby/ruby $(DLDIR)/$(ARCH)/ruby
