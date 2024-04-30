@@ -1,5 +1,5 @@
 {
-    // mkxp-z 2.5.0 configuration file.
+    // mkxp-z configuration file.
     // Lines starting with '//' are comments.
 
     // About filesystem paths specified in this config file:
@@ -9,7 +9,7 @@
     // to the Current Working Directory (when compiled with -DWORKDIR_CURRENT).
     // All other paths are resolved relative to "gameFolder" and ignoring
     // both RTPs and encrypted archives.
-
+    // 
     // Since this is JSON, any backslashes (\) in paths needs to be escaped
     // (i.e. a single backslash becomes a double backslash).
     // If that's too much hassle, you can use a single forward slash instead.
@@ -135,7 +135,7 @@
     // "xbrzScalingFactor": 4.0,
 
     // Replace the game's graphics files with external High-Res files
-    // provided in the "Hires" directory.
+    // provided in the 'Hires' directory.
     // You will also need to set the below Scaling Factors.
     // (Default: false)
     // 
@@ -273,8 +273,8 @@
     // 
     // "integerScalingLastMile": true,
 
-    // Set the base path of the game to '/path/to/game'.
-    // (Default: executable directory)
+    // Sets the base path of the game from provided directory path.
+    // (Default: current directory where the executable is located)
     // 
     // "gameFolder": ".",
 
@@ -283,7 +283,7 @@
     // 
     // "anyAltToggleFS": false,
 
-    // Enable triggering game soft reset on F12 key.
+    // Enable triggering game soft reset (RGSSReset) on F12 key.
     // (Default: true)
     // 
     // "enableReset": true,
@@ -298,16 +298,17 @@
     // 
     // "allowSymlinks": false,
 
-    // Organization and Company name to build the directory path
+    // Organization and Application name to build the directory path
     // where mkxp-z will store game specific data
-    // (e.g. key bindings or game save files).
+    // (e.g. key bindings or game save data).
     // If not specified, mkxp-z will use a directory based
-    // on the name of the game and "." for organization name.
+    // on the name of the game for Application name
+    // and "." for Organization name.
     // 
     // "dataPathOrg": "MyCompanyName",
     // "dataPathApp": "MyGameName",
 
-    // Sets the game window icon from provided file path.
+    // Sets the game window icon image from provided file path.
     // (Default: none)
     // 
     // "iconPath": "path/to/icon.png",
@@ -318,8 +319,8 @@
     // 
     // "customScript": "path/to/script.rb",
 
-    // Define raw scripts (e.g. compatibility wrappers) to be executed
-    // before the actual Data/Scripts.rxdata execution starts.
+    // Define raw Ruby scripts (e.g. compatibility wrappers) to be executed
+    // before the actual 'Data/Scripts.rxdata' execution starts.
     // (Default: none)
     // 
     // "preloadScript": [
@@ -328,13 +329,13 @@
     //     "scripts/preload/win32_wrap.rb"
     // ],
 
-    // Index all accesible assets via their lower case path.
-    // Emulates windows case insensitivity.
+    // Index all accessible assets via their lower case path.
+    // Emulates Windows case insensitivity.
     // (Default: true)
     // 
     // "pathCache": true,
 
-    // Add 'rtp1', 'rtp2.zip' and 'game.rgssad' to the asset search path
+    // Add directories or archives to the asset search path (usually RTP)
     // (multiple allowed).
     // You can use folders, RGSS archives, and any archive formats supported
     // by PhysicsFS.
@@ -342,9 +343,9 @@
     // (Default: none)
     // 
     // "RTP": [
-    //     "/path/to/rtp1",
-    //     "/path/to/rtp2.zip",
-    //     "/path/to/game.rgssad",
+    //     "path/to/rtp1",
+    //     "path/to/rtp2.zip",
+    //     "path/to/Game.rgssad",
     // ],
 
     // Similar to the RTP option, except items are loaded before
@@ -352,8 +353,8 @@
     // (Default: none)
     // 
     // "patches": [
-    //     "/path/to/patch1.zip",
-    //     "/path/to/patch2"
+    //     "path/to/patch1",
+    //     "path/to/patch2.zip"
     // ],
 
     // Use the script names as filename in warnings and error messages.
@@ -456,7 +457,7 @@
     // The game executable name minus ".exe".
     // By default this is "Game", but some developers manually rename it.
     // mkxp-z needs this name because both the .ini (game configuration)
-    // and .rgssad (encrypted data archive) must carry the same name
+    // and .rgssad (encrypted data archive) files must carry the same name
     // minus their extension, and we cannot guess the executable's name.
     // You could just as well rename them both to "Game.ini" and "Game.rgssad",
     // but specifying the executable name here is a tiny bit less intrusive.
