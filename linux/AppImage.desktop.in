@@ -6,6 +6,6 @@ Exec=@EXECNAME@
 Comment=@DESCRIPTION@
 Categories=Game;
 Terminal=false
-X-AppImage-Name=@NAME@
+X-AppImage-Name=@APPIMAGE_NAME@
 X-AppImage-Version=@VERSION@
 X-AppImage-Arch=@ARCH@

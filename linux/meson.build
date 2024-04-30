@@ -2,6 +2,7 @@
 if appimagetool != ''
     lin_config = configuration_data()
     lin_config.set('NAME', meson.project_name())
+    lin_config.set('APPIMAGE_NAME', meson.project_name())
     lin_config.set('VERSION', meson.project_version())
     lin_config.set('DESCRIPTION', 'A very heavily modified fork of mkxp')
     lin_config.set('EXECNAME', mkxp_name)
