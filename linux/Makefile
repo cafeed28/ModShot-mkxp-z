@@ -15,7 +15,7 @@ LTO ?= 0
 
 # Whether build SDL_image with JPEG XL (JXL) decoding support.
 # This also means additional downloading libjxl and their dependencies.
-# "make SDL_IMAGE_JXL=1" to build SDL2_image with JPEG XL decoding support.
+# "make SDL_IMAGE_JXL=1" to build SDL_image with JPEG XL decoding support.
 # (Default: 1 (True))
 SDL_IMAGE_JXL ?= 1
 
@@ -32,7 +32,7 @@ OPENSSL_TARGET := linux-$(ARCH)
 # Ruby native libraries architecture name
 RUBY_ARCH = $(shell $(BINDIR)/ruby -e "require 'rbconfig'; puts RbConfig::CONFIG['arch']")
 
-# Define C/C++ compiler
+# Define compilers
 CC  := gcc
 CXX := g++
 
@@ -40,6 +40,7 @@ CXX := g++
 MKFDIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 PREFIX := $(MKFDIR)/build-$(ARCH)
 DLDIR  := $(MKFDIR)/downloads
+DLARCH := $(ARCH)
 BDIR   := build-$(ARCH)
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib
@@ -50,10 +51,15 @@ PKGDIR := $(PREFIX)/lib/pkgconfig
 CFLAGS  := -O3 -I$(INCDIR)
 LDFLAGS := -L$(LIBDIR)
 
-# Autoconf variables and arguments
-PC_PATH        := $(shell pkg-config --variable pc_path pkg-config)
-CONFIGURE_ENV  := PKG_CONFIG_LIBDIR="$(PKGDIR):$(PC_PATH)" CC="$(CC)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
-CONFIGURE_ARGS := --prefix="$(PREFIX)" --libdir="$(PREFIX)/lib"
+# Get system pkg-config paths
+PC_PATH := $(shell pkg-config --variable pc_path pkg-config)
+
+# Environment variables
+AC_ENV    := PKG_CONFIG_LIBDIR="$(PKGDIR):$(PC_PATH)" CC="$(CC)" CXX="$(CXX)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+CMAKE_ENV := PKG_CONFIG_LIBDIR="$(PKGDIR):$(PC_PATH)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+
+# Autoconf options
+AC_ARGS := --prefix="$(PREFIX)" --libdir="$(PREFIX)/lib"
 
 # CMake options
 CMAKE_ARGS := \
@@ -64,7 +70,7 @@ CMAKE_ARGS := \
 	-DCMAKE_BUILD_TYPE=Release
 
 # Ruby configure arguments to build
-RUBY_CONFIGURE_ARGS := \
+RUBY_ARGS := \
 	--enable-shared \
 	--enable-install-static-library \
 	--disable-install-doc \
@@ -82,9 +88,9 @@ RUBY_CONFIGURE_ARGS := \
 
 # Shortcut shell build commands
 GIT           := git clone -q -c advice.detachedHead=false --single-branch --no-tags --depth 1
-CONFIGURE     := $(CONFIGURE_ENV) ./configure $(CONFIGURE_ARGS)
-CMAKE         := $(CONFIGURE_ENV) cmake -S . -B $(BDIR) -G "Unix Makefiles" $(CMAKE_ARGS)
-CMAKE_BUILD   := cmake --build $(BDIR) -j $(NPROC)
+CONFIGURE     := $(AC_ENV) ./configure $(AC_ARGS)
+CMAKE         := $(CMAKE_ENV) cmake -S . -B $(BDIR) -G "Unix Makefiles" $(CMAKE_ARGS)
+CMAKE_BUILD   := cmake --build $(BDIR) -- -j $(NPROC)
 CMAKE_INSTALL := cmake --install $(BDIR)
 
 
@@ -99,14 +105,14 @@ download: \
 	$(DLDIR) \
 	$(DLDIR)/libogg/CMakeLists.txt \
 	$(DLDIR)/libvorbis/CMakeLists.txt \
-	$(DLDIR)/$(ARCH)/libtheora/autogen.sh \
+	$(DLDIR)/$(DLARCH)/libtheora/autogen.sh \
 	$(DLDIR)/zlib-ng/CMakeLists.txt \
 	$(DLDIR)/physfs/CMakeLists.txt \
-	$(DLDIR)/$(ARCH)/libiconv/configure.ac \
+	$(DLDIR)/$(DLARCH)/libiconv/configure.ac \
 	$(DLDIR)/uchardet/CMakeLists.txt \
 	$(DLDIR)/libpng/CMakeLists.txt \
 	$(DLDIR)/libjpeg/CMakeLists.txt \
-	$(DLDIR)/$(ARCH)/pixman/autogen.sh \
+	$(DLDIR)/$(DLARCH)/pixman/autogen.sh \
 	$(DLDIR)/harfbuzz/CMakeLists.txt \
 	$(DLDIR)/freetype/CMakeLists.txt \
 	$(DLDIR)/sdl2/CMakeLists.txt \
@@ -116,9 +122,9 @@ download: \
 	$(DLDIR)/openal/CMakeLists.txt \
 	$(DLDIR)/fluidsynth/CMakeLists.txt \
 	$(DLDIR)/libyaml/CMakeLists.txt \
-	$(DLDIR)/$(ARCH)/libffi/configure.ac \
-	$(DLDIR)/$(ARCH)/openssl/Configure \
-	$(DLDIR)/$(ARCH)/ruby/configure.ac
+	$(DLDIR)/$(DLARCH)/libffi/configure.ac \
+	$(DLDIR)/$(DLARCH)/openssl/Configure \
+	$(DLDIR)/$(DLARCH)/ruby/configure.ac
 
 # Build target recipes
 build: \
@@ -349,25 +355,25 @@ $(DLDIR)/libvorbis/CMakeLists.txt:
 # ----------------------------------- Theora -----------------------------------
 libtheora: init libogg libvorbis $(LIBDIR)/libtheora.a
 
-$(LIBDIR)/libtheora.a: $(DLDIR)/$(ARCH)/libtheora/lib/.libs/libtheora.a
+$(LIBDIR)/libtheora.a: $(DLDIR)/$(DLARCH)/libtheora/lib/.libs/libtheora.a
 	@printf "\e[94m=>\e[0m \e[36mInstalling libtheora...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libtheora; make install
+	@cd $(DLDIR)/$(DLARCH)/libtheora; make install
 
-$(DLDIR)/$(ARCH)/libtheora/lib/.libs/libtheora.a: $(DLDIR)/$(ARCH)/libtheora/Makefile
+$(DLDIR)/$(DLARCH)/libtheora/lib/.libs/libtheora.a: $(DLDIR)/$(DLARCH)/libtheora/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding libtheora...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libtheora; make -j $(NPROC)
+	@cd $(DLDIR)/$(DLARCH)/libtheora; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/libtheora/Makefile: $(DLDIR)/$(ARCH)/libtheora/configure
+$(DLDIR)/$(DLARCH)/libtheora/Makefile: $(DLDIR)/$(DLARCH)/libtheora/configure
 	@printf "\e[94m=>\e[0m \e[36mConfiguring libtheora...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libtheora; $(CONFIGURE) $(OPTS_LIBTHEORA)
+	@cd $(DLDIR)/$(DLARCH)/libtheora; $(CONFIGURE) $(OPTS_LIBTHEORA)
 
-$(DLDIR)/$(ARCH)/libtheora/configure: $(DLDIR)/$(ARCH)/libtheora/autogen.sh
+$(DLDIR)/$(DLARCH)/libtheora/configure: $(DLDIR)/$(DLARCH)/libtheora/autogen.sh
 	@printf "\e[94m=>\e[0m \e[36mPrepare libtheora configuration files...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/libtheora; ./autogen.sh
+	@cd $(DLDIR)/$(DLARCH)/libtheora; autoreconf -fiv -I m4
 
-$(DLDIR)/$(ARCH)/libtheora/autogen.sh:
+$(DLDIR)/$(DLARCH)/libtheora/autogen.sh:
 	@printf "\e[94m=>\e[0m \e[36mDownloading libtheora 1.2.0alpha1+git...\e[0m\n"
-	@$(GIT) -b master https://github.com/xiph/theora $(DLDIR)/$(ARCH)/libtheora
+	@$(GIT) -b master https://github.com/xiph/theora $(DLDIR)/$(DLARCH)/libtheora
 
 
 # =============================== Misc libraries ===============================
@@ -415,24 +421,27 @@ $(DLDIR)/physfs/CMakeLists.txt:
 # ---------------------------------- GNU iconv ---------------------------------
 libiconv: init $(LIBDIR)/libcharset.a
 
-$(LIBDIR)/libcharset.a: $(DLDIR)/$(ARCH)/libiconv/lib/.libs/libiconv.a
+$(LIBDIR)/libcharset.a: $(DLDIR)/$(DLARCH)/libiconv/lib/.libs/libiconv.a
 	@printf "\e[94m=>\e[0m \e[36mInstalling libiconv...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libiconv; make install
+	@cd $(DLDIR)/$(DLARCH)/libiconv; make install
 
-$(DLDIR)/$(ARCH)/libiconv/lib/.libs/libiconv.a: $(DLDIR)/$(ARCH)/libiconv/Makefile
+$(DLDIR)/$(DLARCH)/libiconv/lib/.libs/libiconv.a: $(DLDIR)/$(DLARCH)/libiconv/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding libiconv...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libiconv; make -j $(NPROC)
+	@cd $(DLDIR)/$(DLARCH)/libiconv; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/libiconv/Makefile: $(DLDIR)/$(ARCH)/libiconv/configure.ac
+$(DLDIR)/$(DLARCH)/libiconv/Makefile: $(DLDIR)/$(DLARCH)/libiconv/configure.ac
 	@printf "\e[94m=>\e[0m \e[36mConfiguring libiconv...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/libiconv; $(CONFIGURE) $(OPTS_LIBICONV)
+	@cd $(DLDIR)/$(DLARCH)/libiconv; $(CONFIGURE) $(OPTS_LIBICONV)
 
-$(DLDIR)/$(ARCH)/libiconv/configure.ac:
-	@printf "\e[94m=>\e[0m \e[36mDownloading GNU iconv 1.17...\e[0m\n"
-	@wget -q https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz -P $(DLDIR)/$(ARCH)/
+$(DLDIR)/$(DLARCH)/libiconv/configure.ac: $(DLDIR)/libiconv-1.17.tar.gz
 	@printf "\e[94m=>\e[0m \e[36mUnpacking GNU iconv...\e[0m\n"
-	@tar -xzf $(DLDIR)/$(ARCH)/libiconv-1.17.tar.gz -C $(DLDIR)/$(ARCH)/
-	@mv $(DLDIR)/$(ARCH)/libiconv-1.17 $(DLDIR)/$(ARCH)/libiconv
+	@tar -xzf $(DLDIR)/libiconv-1.17.tar.gz -C $(DLDIR)/$(DLARCH)/
+	@mv $(DLDIR)/$(DLARCH)/libiconv-1.17 $(DLDIR)/$(DLARCH)/libiconv
+	@touch $(DLDIR)/$(DLARCH)/libiconv/configure.ac
+
+$(DLDIR)/libiconv-1.17.tar.gz:
+	@printf "\e[94m=>\e[0m \e[36mDownloading GNU iconv 1.17...\e[0m\n"
+	@wget -q https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz -P $(DLDIR)/
 
 # ---------------------------------- uchardet ----------------------------------
 uchardet: init $(LIBDIR)/libuchardet.a
@@ -500,22 +509,21 @@ $(DLDIR)/libjpeg/CMakeLists.txt:
 # ----------------------------------- Pixman -----------------------------------
 pixman: init libpng $(LIBDIR)/libpixman-1.a
 
-$(LIBDIR)/libpixman-1.a: $(DLDIR)/$(ARCH)/pixman/pixman/.libs/libpixman-1.a
+$(LIBDIR)/libpixman-1.a: $(DLDIR)/$(DLARCH)/pixman/pixman/.libs/libpixman-1.a
 	@printf "\e[94m=>\e[0m \e[36mInstalling Pixman...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/pixman; make install
+	@cd $(DLDIR)/$(DLARCH)/pixman; make install
 
-$(DLDIR)/$(ARCH)/pixman/pixman/.libs/libpixman-1.a: $(DLDIR)/$(ARCH)/pixman/Makefile
+$(DLDIR)/$(DLARCH)/pixman/pixman/.libs/libpixman-1.a: $(DLDIR)/$(DLARCH)/pixman/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding Pixman...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/pixman; make -j $(NPROC)
+	@cd $(DLDIR)/$(DLARCH)/pixman; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/pixman/Makefile: $(DLDIR)/$(ARCH)/pixman/autogen.sh
+$(DLDIR)/$(DLARCH)/pixman/Makefile: $(DLDIR)/$(DLARCH)/pixman/autogen.sh
 	@printf "\e[94m=>\e[0m \e[36mConfiguring Pixman...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/pixman; \
-	$(CONFIGURE_ENV) ./autogen.sh $(CONFIGURE_ARGS) $(OPTS_PIXMAN)
+	@cd $(DLDIR)/$(DLARCH)/pixman; $(AC_ENV) ./autogen.sh $(AC_ARGS) $(OPTS_PIXMAN)
 
-$(DLDIR)/$(ARCH)/pixman/autogen.sh:
+$(DLDIR)/$(DLARCH)/pixman/autogen.sh:
 	@printf "\e[94m=>\e[0m \e[36mDownloading Pixman 0.42.2...\e[0m\n"
-	@$(GIT) -b pixman-0.42.2 https://gitlab.freedesktop.org/pixman/pixman.git $(DLDIR)/$(ARCH)/pixman
+	@$(GIT) -b pixman-0.42.2 https://gitlab.freedesktop.org/pixman/pixman.git $(DLDIR)/$(DLARCH)/pixman
 
 
 # ================================ Text shaping ================================
@@ -733,93 +741,92 @@ $(DLDIR)/libyaml/CMakeLists.txt:
 # --------------------------- libffi (for Fiddle ext) --------------------------
 libffi: init $(LIBDIR)/libffi.a
 
-$(LIBDIR)/libffi.a: $(DLDIR)/$(ARCH)/libffi/Makefile
+$(LIBDIR)/libffi.a: $(DLDIR)/$(DLARCH)/libffi/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding libffi...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libffi; make -j $(NPROC) && make install
+	@cd $(DLDIR)/$(DLARCH)/libffi; make -j $(NPROC) && make install
 
-$(DLDIR)/$(ARCH)/libffi/Makefile: $(DLDIR)/$(ARCH)/libffi/configure
+$(DLDIR)/$(DLARCH)/libffi/Makefile: $(DLDIR)/$(DLARCH)/libffi/configure
 	@printf "\e[94m=>\e[0m \e[36mConfiguring libffi...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libffi; \
-	export $(CONFIGURE_ENV); \
+	@cd $(DLDIR)/$(DLARCH)/libffi; \
+	export $(AC_ENV); \
 	export CFLAGS="-fPIC $$CFLAGS"; \
-	./configure $(CONFIGURE_ARGS) $(OPTS_LIBFFI)
+	./configure $(AC_ARGS) $(OPTS_LIBFFI)
 
-$(DLDIR)/$(ARCH)/libffi/configure: $(DLDIR)/$(ARCH)/libffi/configure.ac
+$(DLDIR)/$(DLARCH)/libffi/configure: $(DLDIR)/$(DLARCH)/libffi/configure.ac
 	@printf "\e[94m=>\e[0m \e[36mPrepare libffi configuration files...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/libffi; autoreconf -i
+	@cd $(DLDIR)/$(DLARCH)/libffi; autoreconf -fi
 
-$(DLDIR)/$(ARCH)/libffi/configure.ac:
+$(DLDIR)/$(DLARCH)/libffi/configure.ac:
 	@printf "\e[94m=>\e[0m \e[36mDownloading libffi 3.4.6...\e[0m\n"
-	@$(GIT) -b v3.4.6 https://github.com/libffi/libffi $(DLDIR)/$(ARCH)/libffi
+	@$(GIT) -b v3.4.6 https://github.com/libffi/libffi $(DLDIR)/$(DLARCH)/libffi
 
 # --------------------------------- OpenSSL 3.0 --------------------------------
 openssl: init $(LIBDIR)/libssl.a
 
-$(LIBDIR)/libssl.a: $(DLDIR)/$(ARCH)/openssl/libssl.a
+$(LIBDIR)/libssl.a: $(DLDIR)/$(DLARCH)/openssl/libssl.a
 	@printf "\e[94m=>\e[0m \e[36mInstalling OpenSSL...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/openssl; make install_sw
+	@cd $(DLDIR)/$(DLARCH)/openssl; make install_sw
 
-$(DLDIR)/$(ARCH)/openssl/libssl.a: $(DLDIR)/$(ARCH)/openssl/Makefile
+$(DLDIR)/$(DLARCH)/openssl/libssl.a: $(DLDIR)/$(DLARCH)/openssl/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding OpenSSL...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/openssl; make -j $(NPROC)
+	@cd $(DLDIR)/$(DLARCH)/openssl; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/openssl/Makefile: $(DLDIR)/$(ARCH)/openssl/Configure
+$(DLDIR)/$(DLARCH)/openssl/Makefile: $(DLDIR)/$(DLARCH)/openssl/Configure
 	@printf "\e[94m=>\e[0m \e[36mConfiguring OpenSSL...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/openssl; perl ./Configure $(OPTS_OPENSSL)
+	@cd $(DLDIR)/$(DLARCH)/openssl; CC="$(CC)" CXX="$(CXX)" perl ./Configure $(OPTS_OPENSSL)
 
-$(DLDIR)/$(ARCH)/openssl/Configure:
+$(DLDIR)/$(DLARCH)/openssl/Configure:
 	@printf "\e[94m=>\e[0m \e[36mDownloading OpenSSL 3.0.13...\e[0m\n"
-	@$(GIT) -b openssl-3.0.13 https://github.com/openssl/openssl $(DLDIR)/$(ARCH)/openssl
+	@$(GIT) -b openssl-3.0.13 https://github.com/openssl/openssl $(DLDIR)/$(DLARCH)/openssl
 
 # ---------------------------------- Ruby 3.1 ----------------------------------
 ruby: init zlib libyaml libffi openssl $(LIBDIR)/libruby.so
 
-$(LIBDIR)/libruby.so: $(DLDIR)/$(ARCH)/ruby/libruby.so.3.1
+$(LIBDIR)/libruby.so: $(DLDIR)/$(DLARCH)/ruby/libruby.so.3.1
 	@printf "\e[94m=>\e[0m \e[36mInstalling Ruby...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/ruby; make install
+	@cd $(DLDIR)/$(DLARCH)/ruby; make install
 
-$(DLDIR)/$(ARCH)/ruby/libruby.so.3.1: $(DLDIR)/$(ARCH)/ruby/Makefile
+$(DLDIR)/$(DLARCH)/ruby/libruby.so.3.1: $(DLDIR)/$(DLARCH)/ruby/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding Ruby...\e[0m\n"
-	@cd $(DLDIR)/$(ARCH)/ruby; make -j $(NPROC)
+	@cd $(DLDIR)/$(DLARCH)/ruby; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/ruby/Makefile: $(DLDIR)/$(ARCH)/ruby/configure
+$(DLDIR)/$(DLARCH)/ruby/Makefile: $(DLDIR)/$(DLARCH)/ruby/configure
 	@printf "\e[94m=>\e[0m \e[36mConfiguring Ruby...\e[0m\n"
 ifeq ($(LTO),1)
-	cd $(DLDIR)/$(ARCH)/ruby; \
-	export $(CONFIGURE_ENV); \
+	@cd $(DLDIR)/$(DLARCH)/ruby; \
+	export $(AC_ENV); \
 	export CFLAGS="$$CFLAGS -flto"; \
 	export LDFLAGS="$$LDFLAGS -flto"; \
-	./configure $(CONFIGURE_ARGS) $(RUBY_CONFIGURE_ARGS)
+	./configure $(AC_ARGS) $(RUBY_ARGS)
 else
-	cd $(DLDIR)/$(ARCH)/ruby; $(CONFIGURE) $(RUBY_CONFIGURE_ARGS)
+	@cd $(DLDIR)/$(DLARCH)/ruby; $(CONFIGURE) $(RUBY_ARGS)
 endif
 
-$(DLDIR)/$(ARCH)/ruby/configure: $(DLDIR)/$(ARCH)/ruby/configure.ac
+$(DLDIR)/$(DLARCH)/ruby/configure: $(DLDIR)/$(DLARCH)/ruby/configure.ac
 	@printf "\e[94m=>\e[0m \e[36mPrepare Ruby configuration files...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/ruby; autoreconf -i
+	@cd $(DLDIR)/$(DLARCH)/ruby; autoreconf -fi
 
-$(DLDIR)/$(ARCH)/ruby/configure.ac:
+$(DLDIR)/$(DLARCH)/ruby/configure.ac:
 	@printf "\e[94m=>\e[0m \e[36mDownloading Ruby 3.1.5...\e[0m\n"
-	@$(GIT) -b v3_1_5 https://github.com/ruby/ruby $(DLDIR)/$(ARCH)/ruby
+	@$(GIT) -b v3_1_5 https://github.com/ruby/ruby $(DLDIR)/$(DLARCH)/ruby
 
 # --------------------------- Ruby OpenSSL shared ext --------------------------
 ruby-ext-openssl: openssl ruby $(LIBDIR)/ruby/3.1.0/openssl
 
-$(LIBDIR)/ruby/3.1.0/openssl: $(DLDIR)/$(ARCH)/ruby/ext/openssl/openssl.so
+$(LIBDIR)/ruby/3.1.0/openssl: $(DLDIR)/$(DLARCH)/ruby/ext/openssl/openssl.so
 	@printf "\e[94m=>\e[0m \e[36mInstalling openssl Ruby extension...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/ruby/ext/openssl; \
+	cd $(DLDIR)/$(DLARCH)/ruby/ext/openssl; \
 	cp -pv openssl.so $(LIBDIR)/ruby/3.1.0/$(RUBY_ARCH); \
 	cp -rv lib/* $(LIBDIR)/ruby/3.1.0
 
-$(DLDIR)/$(ARCH)/ruby/ext/openssl/openssl.so: $(DLDIR)/$(ARCH)/ruby/ext/openssl/Makefile
+$(DLDIR)/$(DLARCH)/ruby/ext/openssl/openssl.so: $(DLDIR)/$(DLARCH)/ruby/ext/openssl/Makefile
 	@printf "\e[94m=>\e[0m \e[36mBuilding openssl Ruby extension...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/ruby/ext/openssl; make -j $(NPROC)
+	cd $(DLDIR)/$(DLARCH)/ruby/ext/openssl; make -j $(NPROC)
 
-$(DLDIR)/$(ARCH)/ruby/ext/openssl/Makefile: $(DLDIR)/$(ARCH)/ruby/ext/openssl/extconf.rb.bak
+$(DLDIR)/$(DLARCH)/ruby/ext/openssl/Makefile: $(DLDIR)/$(DLARCH)/ruby/ext/openssl/extconf.rb.orig
 	@printf "\e[94m=>\e[0m \e[36mConfiguring openssl Ruby extension...\e[0m\n"
-	cd $(DLDIR)/$(ARCH)/ruby/ext/openssl; $(BINDIR)/ruby extconf.rb
+	cd $(DLDIR)/$(DLARCH)/ruby/ext/openssl; $(BINDIR)/ruby extconf.rb
 
-$(DLDIR)/$(ARCH)/ruby/ext/openssl/extconf.rb.bak:
+$(DLDIR)/$(DLARCH)/ruby/ext/openssl/extconf.rb.orig:
 	@printf "\e[94m=>\e[0m \e[36mPatching openssl extconf.rb...\e[0m\n"
-	cp -v $(DLDIR)/$(ARCH)/ruby/ext/openssl/extconf.rb $(DLDIR)/$(ARCH)/ruby/ext/openssl/extconf.rb.bak
-	patch $(DLDIR)/$(ARCH)/ruby/ext/openssl/extconf.rb $(MKFDIR)/ruby-extconf-openssl.patch
+	patch -s -b $(DLDIR)/$(DLARCH)/ruby/ext/openssl/extconf.rb $(MKFDIR)/ruby-extconf-openssl.patch
