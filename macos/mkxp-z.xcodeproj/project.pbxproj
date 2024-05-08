@@ -2679,11 +2679,12 @@
 			baseConfigurationReference = 3B1C231F25A15FB20075EF5D /* mkxp-z.Intel.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IntelSteam";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					MKXPZ_STEAM,
 				);
-				MKXPZ_EXECUTABLE_NAME = steamshim;
+				MKXPZ_EXECUTABLE_NAME_PLIST = steamshim;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 			};
 			name = Debug;
@@ -2693,11 +2694,12 @@
 			baseConfigurationReference = 3B1C231F25A15FB20075EF5D /* mkxp-z.Intel.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/IntelSteam";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					MKXPZ_STEAM,
 				);
-				MKXPZ_EXECUTABLE_NAME = steamshim;
+				MKXPZ_EXECUTABLE_NAME_PLIST = steamshim;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 			};
 			name = Release;
@@ -2739,11 +2741,12 @@
 			baseConfigurationReference = 3B1C232025A15FB20075EF5D /* mkxp-z.Universal.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/UniversalSteam";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					MKXPZ_STEAM,
 				);
-				MKXPZ_EXECUTABLE_NAME = steamshim;
+				MKXPZ_EXECUTABLE_NAME_PLIST = steamshim;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 			};
 			name = Debug;
@@ -2753,11 +2756,12 @@
 			baseConfigurationReference = 3B1C232025A15FB20075EF5D /* mkxp-z.Universal.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/UniversalSteam";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					MKXPZ_STEAM,
 				);
-				MKXPZ_EXECUTABLE_NAME = steamshim;
+				MKXPZ_EXECUTABLE_NAME_PLIST = steamshim;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 			};
 			name = Release;
@@ -2767,6 +2771,7 @@
 			baseConfigurationReference = 3B1C232025A15FB20075EF5D /* mkxp-z.Universal.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Universal";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 			};
 			name = Debug;
 		};
@@ -2775,6 +2780,7 @@
 			baseConfigurationReference = 3B1C232025A15FB20075EF5D /* mkxp-z.Universal.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Universal";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 			};
 			name = Release;
 		};
@@ -2783,6 +2789,7 @@
 			baseConfigurationReference = 3B1C231F25A15FB20075EF5D /* mkxp-z.Intel.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Intel";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 			};
 			name = Debug;
 		};
@@ -2791,6 +2798,7 @@
 			baseConfigurationReference = 3B1C231F25A15FB20075EF5D /* mkxp-z.Intel.xcconfig */;
 			buildSettings = {
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Intel";
+				EXECUTABLE_NAME = "$(MKXPZ_EXECUTABLE_NAME)";
 			};
 			name = Release;
 		};

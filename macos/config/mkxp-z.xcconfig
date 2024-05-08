@@ -1,5 +1,6 @@
 // Executable filename for each mkxp-z targets
-MKXPZ_EXECUTABLE_NAME = $(PRODUCT_NAME)
+MKXPZ_EXECUTABLE_NAME = mkxp-z
+MKXPZ_EXECUTABLE_NAME_PLIST = $(MKXPZ_EXECUTABLE_NAME)
 
 // Ruby (MRI) version to include Ruby headers
 MRI_VERSION = 3.1.0
