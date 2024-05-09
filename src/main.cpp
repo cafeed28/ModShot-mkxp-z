@@ -177,7 +177,7 @@ static void rgssThreadError(RGSSThreadData *rtData, const std::string &msg) {
 
 static void showInitError(const std::string &msg) {
   Debug() << msg;
-  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "mkxp-z", msg.c_str(), 0);
+  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "OneShot", msg.c_str(), 0);
 }
 
 static void setupWindowIcon(const Config &conf, SDL_Window *win) {
@@ -282,7 +282,7 @@ int main(int argc, char *argv[]) {
 
         std::string str_version = mkxpz_version + " (" + git_hash.substr(0, 7) + ")";
 
-        Debug() << "Starting mkxp-z version " + str_version;
+        Debug() << "Starting ModShot version " + str_version;
     }
 
 #ifdef MKXPZ_STEAM
@@ -402,7 +402,7 @@ int main(int argc, char *argv[]) {
 #endif
     
 #if defined(MKXPZ_BUILD_XCODE)
-#define DEBUG_FSELECT_MSG "Select the folder from which to load game files. This is the folder containing the game's INI."
+#define DEBUG_FSELECT_MSG "Select the folder from which to load game files. This is the folder containing OneShot game files."
 #define DEBUG_FSELECT_PROMPT "Load Game"
     if (conf.manualFolderSelect) {
         std::string dataDirStr = mkxp_fs::selectPath(win, DEBUG_FSELECT_MSG, DEBUG_FSELECT_PROMPT);

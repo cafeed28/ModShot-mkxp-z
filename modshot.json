@@ -1,11 +1,11 @@
 {
-    // mkxp-z configuration file.
+    // ModShot configuration file.
     // Lines starting with '//' are comments.
 
     // About filesystem paths specified in this config file:
     // 
     // The "gameFolder" path is resolved either relative to the directory
-    // containing the mkxp-z executable (the default behavior), or relative
+    // containing the ModShot executable (the default behavior), or relative
     // to the Current Working Directory (when compiled with -DWORKDIR_CURRENT).
     // All other paths are resolved relative to "gameFolder" and ignoring
     // both RTPs and encrypted archives.
@@ -18,7 +18,7 @@
     // 
     // "MKXPZ_WINDOWS_CONSOLE"
     //   Enables/disables the extra console window on Windows.
-    //   It appears by default whenever mkxp-z is started in Debug mode. (e.g.
+    //   It appears by default whenever ModShot is started in Debug mode. (e.g.
     //   RPG Maker playtest or has provided "debug"/"test" as command argument)
     // 
     // "MKXPZ_FOLDER_SELECT"
@@ -40,20 +40,6 @@
 
     // =========================================================================
 
-    // Specify the RGSS version to run under.
-    // If set to 0, mkxp-z will try to guess the required version
-    // based on the game files found in "gameFolder".
-    // If this fails, the version defaults to 1 (RPG Maker XP).
-    // 
-    // Possible values are:
-    //   0: Auto, based on game files
-    //   1: RPG Maker XP (RGSS1)
-    //   2: RPG Maker VX (RGSS2)
-    //   3: RPG Maker VX Ace (RGSS3)
-    // (Default: 0)
-    // 
-    // "rgssVersion": 0,
-
     // Continuously display average FPS in window title.
     // This can always be toggled with F2 key at runtime.
     // (Default: false)
@@ -68,9 +54,9 @@
     // "printFPS": false,
 
     // Whether make the window resizable or not.
-    // (Default: true)
+    // (Default: false)
     // 
-    // "winResizable": true,
+    // "winResizable": false,
 
     // Start game in fullscreen instead.
     // This can be toggled with Alt+Enter at runtime
@@ -160,9 +146,9 @@
     // "atlasScalingFactor": 4.0,
 
     // Sync game screen redraws to the system screen refresh rate.
-    // (Default: false)
+    // (Default: true)
     // 
-    // "vsync": false,
+    // "vsync": true,
 
     // Specify the window width on startup.
     // If set to 0, it will default to the default resolution width
@@ -245,7 +231,7 @@
     // "enableBlitting": false,
 
     // Limit the maximum size (width and height dimensions) of most textures
-    // mkxp-z will create (exceptions are rendering backbuffers and similar).
+    // ModShot will create (exceptions are rendering backbuffers and similar).
     // If set to 0, the hardware maximum is used.
     // This is useful for recording traces that can be played back on machines
     // with lower specs.
@@ -284,9 +270,9 @@
     // "anyAltToggleFS": false,
 
     // Enable triggering game soft reset (RGSSReset) on F12 key.
-    // (Default: true)
+    // (Default: false)
     // 
-    // "enableReset": true,
+    // "enableReset": false,
 
     // Enable settings (keybinding) menu on F1 key.
     // (Default: true)
@@ -299,14 +285,13 @@
     // "allowSymlinks": false,
 
     // Organization and Application name to build the directory path
-    // where mkxp-z will store game specific data
+    // where ModShot will store game specific data
     // (e.g. key bindings or game save data).
-    // If not specified, mkxp-z will use a directory based
-    // on the name of the game for Application name
+    // If not specified, ModShot will use "Oneshot" for Application name
     // and "." for Organization name.
     // 
     // "dataPathOrg": "MyCompanyName",
-    // "dataPathApp": "MyGameName",
+    // "dataPathApp": "MyModName",
 
     // Sets the game window icon image from provided file path.
     // (Default: none)
@@ -324,9 +309,8 @@
     // (Default: none)
     // 
     // "preloadScript": [
-    //     "scripts/preload/ruby_classic_wrap.rb",
-    //     "scripts/preload/mkxp_wrap.rb",
-    //     "scripts/preload/win32_wrap.rb"
+    //     "Scripts/preload/patches.rb",
+    //     "Scripts/preload/mod.rb"
     // ],
 
     // Index all accessible assets via their lower case path.
@@ -354,7 +338,8 @@
     // 
     // "patches": [
     //     "path/to/patch1",
-    //     "path/to/patch2.zip"
+    //     "path/to/patch2.zip",
+    //     "path/to/mod.zip"
     // ],
 
     // Use the script names as filename in warnings and error messages.
@@ -377,7 +362,7 @@
     //     "Times New Roman>Liberation Serif"
     // ],
 
-    // Because mkxp-z is usually distributed as a standalone build,
+    // Because ModShot is usually distributed as a standalone build,
     // no predefined load paths are initialized ($:, $LOAD_PATH)
     // in the MRI backend.
     // With this option, they can be specified manually (e.g. when using
@@ -386,9 +371,7 @@
     // (Default: none)
     // 
     // "rubyLoadpath": [
-    //     "rubylib/3.1.0",
-    //     "/usr/lib64/ruby/",
-    //     "/usr/local/share/ruby/site_ruby"
+    //     "rubylib/3.1.0"
     // ],
 
     // Determines whether MJIT is enabled.
@@ -425,21 +408,6 @@
     // 
     // "YJITEnable": false,
 
-    // SoundFont to use for BGM MIDI playback.
-    // (Default: none)
-    //
-    // "midiSoundFont": "Audio/SF/GMGSx.sf2",
-
-    // Activate Chorus effect for BGM MIDI playback.
-    // (Default: false)
-    // 
-    // "midiChorus": false,
-
-    // Activate Reverb effect for BGM MIDI playback.
-    // (Default: false)
-    // 
-    // "midiReverb": false,
-
     // Number of OpenAL sources to allocate for SE playback.
     // If there are a lot of sounds playing at the same time and audibly
     // cutting each other off, try increasing this number.
@@ -453,16 +421,6 @@
     // (Default: 1, Maximum: 16)
     // 
     // "BGMTrackCount": 1,
-
-    // The game executable name minus ".exe".
-    // By default this is "Game", but some developers manually rename it.
-    // mkxp-z needs this name because both the .ini (game configuration)
-    // and .rgssad (encrypted data archive) files must carry the same name
-    // minus their extension, and we cannot guess the executable's name.
-    // You could just as well rename them both to "Game.ini" and "Game.rgssad",
-    // but specifying the executable name here is a tiny bit less intrusive.
-    // 
-    // "execName": "Game",
 
     // You can define alternate terminology for the different inputs
     // recognized by RPG Maker.

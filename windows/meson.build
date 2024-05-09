@@ -33,22 +33,22 @@ win_config.set('PROJECT_VERSION', meson.project_version())
 win_config.set('VERSION_MAJOR', version_major)
 win_config.set('VERSION_MINOR', version_minor)
 win_config.set('VERSION_PATCH', version_patch)
-win_config.set('AUTHOR', '')
-win_config.set('COPYRIGHT', '(c) 2024, mkxp-z Contributors. @0@'.format(win_copyright_license))
+win_config.set('AUTHOR', 'hat_kid')
+win_config.set('COPYRIGHT', '(c) 2024, hat_kid. @0@'.format(win_copyright_license))
 win_config.set('COMMENT', '')
 
 if git_hash != '0000000000000000000000000000000000000000'
     win_config.set('COMMENT', 'Built from Git hash: @0@'.format(git_hash))
 endif
 
-# mkxp-z Windows executable resources
+# ModShot Windows executable resources
 win_mkxp_config = configuration_data()
 win_mkxp_config.merge_from(win_config)
-win_mkxp_config.set('FILE_DESC', meson.project_name())
+win_mkxp_config.set('FILE_DESC', 'OneShot')
 win_mkxp_config.set('PRODUCT_NAME', meson.project_name())
 win_mkxp_config.set('FILENAME', '@0@.exe'.format(mkxp_name))
 win_mkxp_config.set('MANIFEST_FILE', 'manifest.xml')
-win_mkxp_config.set('MANIFEST_DESC', '@0@ - A very heavily modified fork of mkxp'.format(meson.project_name()))
+win_mkxp_config.set('MANIFEST_DESC', '@0@ - Advanced OneShot (2016) Game Engine'.format(meson.project_name()))
 
 win_mkxp_xml = configure_file(
     configuration: win_mkxp_config,

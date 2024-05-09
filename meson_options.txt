@@ -42,7 +42,7 @@ option(
     description: 'Path to AppImageTool binary. Providing will pack to AppImage file on install'
 )
 
-# mkxp-z modules options
+# ModShot modules options
 option(
     'cjk_font',
     type: 'boolean',
@@ -53,21 +53,21 @@ option(
 option(
     'fluidsynth',
     type: 'boolean',
-    value: true,
+    value: false,
     description: 'Enable FluidSynth (MIDI support)'
 )
 
 option(
     'miniffi',
     type: 'boolean',
-    value: true,
+    value: false,
     description: 'Enable MiniFFI Ruby bindings (Win32API)'
 )
 
 option(
     'https',
     type: 'boolean',
-    value: true,
+    value: false,
     description: 'Enable HTTPLite Ruby bindings (HTTPS support, Requires OpenSSL)'
 )
 

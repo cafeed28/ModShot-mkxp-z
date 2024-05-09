@@ -27,7 +27,7 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>© 2024, $(PRODUCT_NAME) Contributors.</string>
+	<string>© 2024, hat_kid.</string>
 	<key>NSRequiresAquaSystemAppearance</key>
 	<string>NO</string>
 </dict>

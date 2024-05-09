@@ -13,12 +13,6 @@ NPROC ?= $(shell nproc)
 # (Default: 0 (False))
 LTO ?= 0
 
-# Whether build SDL_image with JPEG XL (JXL) decoding support.
-# This also means additional downloading libjxl and their dependencies.
-# "make SDL_IMAGE_JXL=1" to build SDL_image with JPEG XL decoding support.
-# (Default: 1 (True))
-SDL_IMAGE_JXL ?= 1
-
 
 # ==============================================================================
 
@@ -618,18 +612,10 @@ $(DLDIR)/sdl2_image/$(BDIR)/libSDL2_image.a: $(DLDIR)/sdl2_image/$(BDIR)/Makefil
 $(DLDIR)/sdl2_image/$(BDIR)/Makefile: $(DLDIR)/sdl2_image/CMakeLists.txt
 	@printf "\e[94m=>\e[0m \e[36mConfiguring SDL2_image...\e[0m\n"
 	@cd $(DLDIR)/sdl2_image; $(CMAKE) $(OPTS_SDL_IMAGE)
-ifeq ($(SDL_IMAGE_JXL),1)
-	@cd $(DLDIR)/sdl2_image; cmake -S . -B $(BDIR) \
-	-DSDL2IMAGE_VENDORED=ON -DSDL2IMAGE_JXL=ON -DJPEGXL_ENABLE_OPENEXR=OFF
-endif
 
 $(DLDIR)/sdl2_image/CMakeLists.txt:
 	@printf "\e[94m=>\e[0m \e[36mDownloading SDL2_image 2.8.2...\e[0m\n"
 	@$(GIT) -b release-2.8.2 https://github.com/libsdl-org/SDL_image $(DLDIR)/sdl2_image
-ifeq ($(SDL_IMAGE_JXL),1)
-	@printf "\e[94m=>\e[0m \e[36mDownloading libjxl for SDL2_image...\e[0m\n"
-	@cd $(DLDIR)/sdl2_image; git submodule update -q --init --recursive external/libjxl
-endif
 
 # ---------------------------------- SDL2_ttf ----------------------------------
 sdl2_ttf: init sdl2 freetype harfbuzz $(LIBDIR)/libSDL2_ttf.a

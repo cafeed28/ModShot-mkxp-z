@@ -166,8 +166,10 @@ struct SharedStatePrivate
 
 		/* RGSS3 games will call setup_midi, so there's
 		 * no need to do it on startup */
+		/*
 		if (rgssVer <= 2)
 			midiState.initIfNeeded(threadData->config);
+		*/
 	}
 
 	~SharedStatePrivate()

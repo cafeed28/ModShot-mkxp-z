@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-    - master
+    - main
     - dev
     paths:
     - '.github/workflows/autobuild.yml'
@@ -20,7 +20,7 @@ on:
 
   pull_request:
     branches:
-    - master
+    - main
     - dev
     paths:
     - '.github/workflows/autobuild.yml'
@@ -87,7 +87,7 @@ jobs:
         shell: msys2 {0}
         run: make LTO=0
 
-      - name: Build mkxp-z
+      - name: Build ModShot
         shell: msys2 {0}
         run: |
           source windows/vars.sh
@@ -106,7 +106,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mkxp-z_Windows_${{ matrix.sys }}_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          name: ModShot_Windows_${{ matrix.sys }}_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
           path: build/artifact
 
   build-ubuntu-20:
@@ -152,7 +152,7 @@ jobs:
         working-directory: ${{ github.workspace }}/linux
         run: make LTO=0
 
-      - name: Build mkxp-z
+      - name: Build ModShot
         run: |
           source linux/vars.sh
           meson build --prefix="$GITHUB_WORKSPACE/build/artifact"
@@ -162,14 +162,14 @@ jobs:
       - name: Prepare artifact
         working-directory: ${{ github.workspace }}/build/artifact
         run: |
-          strip ./mkxp-z.x86_64
+          strip ./modshot
           strip ./lib64/libruby.so.3.1
           strip ./rubylib/3.1.0/*/*.so
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mkxp-z_Ubuntu_20.04_x86-64_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          name: ModShot_Ubuntu_20.04_x86-64_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
           path: build/artifact
 
   build-macos:
@@ -205,18 +205,16 @@ jobs:
         working-directory: ${{ github.workspace }}/macos
         run: ./setup.command
 
-      - name: Build mkxp-z
+      - name: Build ModShot
         working-directory: ${{ github.workspace }}/macos
-        run: xcodebuild -project mkxp-z.xcodeproj -scheme "Universal" -configuration "Release" -derivedDataPath "$GITHUB_WORKSPACE/build"
+        run: xcodebuild -project ModShot.xcodeproj -scheme "Universal" -configuration "Release" -derivedDataPath "$GITHUB_WORKSPACE/build"
 
       - name: Prepare artifact
         working-directory: ${{ github.workspace }}/build/Build/Products/Release
-        run: |
-          cp -v ../../../../assets/LICENSE.mkxp-z-with-https.txt Universal/
-          ditto -Vkc --sequesterRsrc Universal mkxp-z.zip
+        run: ditto -Vkc --sequesterRsrc Universal ModShot.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mkxp-z_macOS_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
-          path: build/Build/Products/Release/mkxp-z.zip
+          name: ModShot_macOS_${{ github.event_name == 'pull_request' && format('PR{0}', github.event.number) || github.ref_name }}_${{ steps.shorten-sha.outputs.sha }}
+          path: build/Build/Products/Release/ModShot.zip

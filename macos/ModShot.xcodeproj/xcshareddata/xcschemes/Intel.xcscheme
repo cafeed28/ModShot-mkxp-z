@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3BD2B64B2565AEC0003DAD8A"
-               BuildableName = "mkxp-z.app"
-               BlueprintName = "mkxp-z (Intel)"
-               ReferencedContainer = "container:mkxp-z.xcodeproj">
+               BuildableName = "OneShot.app"
+               BlueprintName = "ModShot (Intel)"
+               ReferencedContainer = "container:ModShot.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -31,9 +31,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BD2B64B2565AEC0003DAD8A"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Intel)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Intel)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BD2B64B2565AEC0003DAD8A"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Intel)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Intel)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -85,9 +85,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3BD2B64B2565AEC0003DAD8A"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Intel)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Intel)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -96,7 +96,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "mkxp-z (Intel)"
+      customArchiveName = "ModShot (Intel)"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

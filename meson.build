@@ -1,7 +1,7 @@
 project(
-    'mkxp-z',
+    'ModShot',
     ['cpp', 'c'],
-    version: '2.5.0',
+    version: '2.0.0',
     license: 'GPL-2.0 or later',
     meson_version: '>=0.56.0',
     default_options: [
@@ -18,7 +18,7 @@ host_system = host_machine.system()
 host_cpu = host_machine.cpu()
 host_arch = host_machine.cpu_family()
 
-# We have Xcode project in "macos" directory to build mkxp-z for macOS systems
+# We have Xcode project in "macos" directory to build for macOS systems
 if host_system == 'darwin'
     error('This Meson project currently does not supports macOS building')
 endif
@@ -71,8 +71,8 @@ else
     warning('".git" directory was not found; fallback MKXPZ_GIT_HASH to zeros')
 endif
 
-# Define global variables for mkxp-z target
-mkxp_name = meson.project_name()
+# Define global variables for ModShot target
+mkxp_name = meson.project_name().to_lower()
 mkxp_sources = []
 mkxp_includes = []
 mkxp_dependencies = []
@@ -89,7 +89,7 @@ if is_debug
     mkxp_cflags += '-DMKXPZ_DEBUG'
 endif
 
-# Add mkxp-z C flags
+# Add ModShot C flags
 mkxp_cflags += [
     '-DMKXPZ_BUILD_MESON',
     '-DMKXPZ_VERSION="@0@"'.format(meson.project_version()),
@@ -144,11 +144,6 @@ if is_static
             '-static-libstdc++'
         ]
     endif
-endif
-
-# Add suffix of CPU arch to executable filename on Linux
-if host_system == 'linux' and appimagetool == ''
-    mkxp_name += '.' + host_cpu
 endif
 
 mkxp_gplv3 = false
@@ -303,7 +298,7 @@ if mkxp_steam
     )
 endif
 
-# mkxp-z executable target
+# ModShot executable target
 executable(
     mkxp_name,
     sources: mkxp_sources,

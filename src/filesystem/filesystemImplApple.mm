@@ -62,8 +62,8 @@ std::string filesystemImpl::normalizePath(const char *path, bool preferred, bool
 
 std::string filesystemImpl::getDefaultGameRoot()
 {
-    NSString *path = [NSString stringWithFormat:@"%@/%s", NSBundle.mainBundle.bundlePath, "Contents/Game"];
-    return std::string(NSTOPATH(path));
+    NSString *path = [NSString stringWithFormat:@"%@/../", NSBundle.mainBundle.bundlePath];
+    return normalizePath(NSTOPATH(path), true, true);
 }
 
 NSString *getPathForAsset_internal(const char *baseName, const char *ext)

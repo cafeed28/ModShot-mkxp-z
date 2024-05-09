@@ -1,10 +1,10 @@
 # Generate AppRun and .desktop files for AppImage packaging
 if appimagetool != ''
     lin_config = configuration_data()
-    lin_config.set('NAME', meson.project_name())
+    lin_config.set('NAME', 'OneShot')
     lin_config.set('APPIMAGE_NAME', meson.project_name())
     lin_config.set('VERSION', meson.project_version())
-    lin_config.set('DESCRIPTION', 'A very heavily modified fork of mkxp')
+    lin_config.set('DESCRIPTION', 'A surreal top down Puzzle/Adventure game with unique gameplay capabilities.')
     lin_config.set('EXECNAME', mkxp_name)
     lin_config.set('ARCH', host_arch)
 

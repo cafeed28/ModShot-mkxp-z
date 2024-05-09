@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3BBE87802705A73400A574AE"
-               BuildableName = "mkxp-z.app"
-               BlueprintName = "mkxp-z (Universal, Steam)"
-               ReferencedContainer = "container:mkxp-z.xcodeproj">
+               BlueprintIdentifier = "3BC65D8A2584F3AD0063AFF1"
+               BuildableName = "OneShot.app"
+               BlueprintName = "ModShot (Universal)"
+               ReferencedContainer = "container:ModShot.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,10 +30,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3BBE87802705A73400A574AE"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Universal, Steam)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BlueprintIdentifier = "3BC65D8A2584F3AD0063AFF1"
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Universal)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -54,10 +54,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3BBE87802705A73400A574AE"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Universal, Steam)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BlueprintIdentifier = "3BC65D8A2584F3AD0063AFF1"
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Universal)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -84,10 +84,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3BBE87802705A73400A574AE"
-            BuildableName = "mkxp-z.app"
-            BlueprintName = "mkxp-z (Universal, Steam)"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            BlueprintIdentifier = "3BC65D8A2584F3AD0063AFF1"
+            BuildableName = "OneShot.app"
+            BlueprintName = "ModShot (Universal)"
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -96,7 +96,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "mkxp-z (Universal, Steam)"
+      customArchiveName = "ModShot (Universal)"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

@@ -121,17 +121,17 @@ json::value readConfFile(const char *path) {
     return ret;
 }
 
-#define CONF_FILE "mkxp.json"
+#define CONF_FILE "modshot.json"
 
 Config::Config() {}
 
 void Config::read(int argc, char *argv[]) {
     auto optsJ = json::object({
-        {"rgssVersion", 0},
+        {"rgssVersion", 1},
         {"debugMode", false},
         {"displayFPS", false},
         {"printFPS", false},
-        {"winResizable", true},
+        {"winResizable", false},
         {"fullscreen", false},
         {"fixedAspectRatio", true},
         {"smoothScaling", 0},
@@ -147,7 +147,7 @@ void Config::read(int argc, char *argv[]) {
         {"textureScalingFactor", 1.},
         {"framebufferScalingFactor", 1.},
         {"atlasScalingFactor", 1.},
-        {"vsync", false},
+        {"vsync", true},
         {"defScreenW", 0},
         {"defScreenH", 0},
         {"windowTitle", ""},
@@ -171,7 +171,7 @@ void Config::read(int argc, char *argv[]) {
         {"maxTextureSize", 0},
         {"gameFolder", ""},
         {"anyAltToggleFS", false},
-        {"enableReset", true},
+        {"enableReset", false},
         {"enableSettings", true},
         {"allowSymlinks", false},
         {"dataPathOrg", ""},
@@ -389,6 +389,7 @@ void Config::readGameINI() {
         return;
     }
     
+    /*
     std::string iniFileName(execName + ".ini");
     SDLRWStream iniFile(iniFileName.c_str(), "r");
     
@@ -421,20 +422,22 @@ void Config::readGameINI() {
     catch (const Exception &e) {
         Debug() << iniFileName + ": Could not determine encoding of Game.Title";
     }
+    */
     
-    if (game.title.empty() || !convSuccess)
-        game.title = "mkxp-z";
+    if (game.title.empty())
+        game.title = "OneShot";
     
     if (dataPathOrg.empty())
         dataPathOrg = ".";
     
     if (dataPathApp.empty())
-        dataPathApp = game.title;
+        dataPathApp = "Oneshot";
     
     customDataPath = mkxp_fs::normalizePath(prefPath(dataPathOrg.c_str(), dataPathApp.c_str()).c_str(), 0, 1);
     
+    /*
     if (rgssVersion == 0) {
-        /* Try to guess RGSS version based on Data/Scripts extension */
+        // Try to guess RGSS version based on Data/Scripts extension
         rgssVersion = 1;
         
         if (!game.scripts.empty()) {
@@ -451,6 +454,10 @@ void Config::readGameINI() {
                 rgssVersion = 3;
         }
     }
+    */
+    
+    if (game.scripts.empty())
+        game.scripts = "Data/xScripts.rxdata";
     
     setupScreenSize(*this);
 }

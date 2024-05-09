@@ -17,7 +17,7 @@
                BlueprintIdentifier = "3B1C235525A199370075EF5D"
                BuildableName = "steamshim"
                BlueprintName = "Steamshim"
-               ReferencedContainer = "container:mkxp-z.xcodeproj">
+               ReferencedContainer = "container:ModShot.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,7 +33,7 @@
             BlueprintIdentifier = "3B1C235525A199370075EF5D"
             BuildableName = "steamshim"
             BlueprintName = "Steamshim"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -57,7 +57,7 @@
             BlueprintIdentifier = "3B1C235525A199370075EF5D"
             BuildableName = "steamshim"
             BlueprintName = "Steamshim"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -75,7 +75,7 @@
             BlueprintIdentifier = "3B1C235525A199370075EF5D"
             BuildableName = "steamshim"
             BlueprintName = "Steamshim"
-            ReferencedContainer = "container:mkxp-z.xcodeproj">
+            ReferencedContainer = "container:ModShot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -84,7 +84,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "mkxp-z Steamshim"
+      customArchiveName = "ModShot Steamshim"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

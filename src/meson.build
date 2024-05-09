@@ -16,21 +16,7 @@ dep_pixman = dependency('pixman-1', static: is_static)
 dep_openal = dependency('openal', method: 'pkg-config', static: is_static)
 
 dep_sdl2 = dependency('SDL2', static: is_static)
-dep_sdl2_image = dependency('SDL2_image', method: 'cmake', required: false, static: is_static, modules: [
-    'SDL2_image::SDL2_image-static',
-    'SDL2_image::brotlidec-static',
-    'SDL2_image::brotlicommon-static',
-    'SDL2_image::hwy',
-    'SDL2_image::external_libjxl'
-])
-
-# In case if we didn't built with JXL support
-if not dep_sdl2_image.found()
-    dep_sdl2_image = dependency('SDL2_image', method: 'cmake', static: is_static, modules: [
-        'SDL2_image::SDL2_image-static'
-    ])
-endif
-
+dep_sdl2_image = dependency('SDL2_image', static: is_static)
 dep_sdl2_ttf = dependency('SDL2_ttf', static: is_static)
 dep_sdl2_sound = dependency('SDL2_sound', static: is_static)
 

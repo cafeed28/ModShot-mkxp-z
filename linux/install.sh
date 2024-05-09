@@ -67,14 +67,10 @@ function make_prefix {
   fi
 
   # Copy configuration file
-  if [[ ! -f "$INSTALL/mkxp.json" ]]; then
-    echo "Installing mkxp.json..."
-    cp -pu "$SOURCE/mkxp.json" "$INSTALL/"
+  if [[ ! -f "$INSTALL/modshot.json" ]]; then
+    echo "Installing modshot.json..."
+    cp -pu "$SOURCE/modshot.json" "$INSTALL/"
   fi
-
-  # Copy scripts directory
-  echo "Installing scripts..."
-  cp -pur "$SOURCE/scripts/." "$INSTALL/scripts/"
 
   # Copy Ruby library (gems/extensions)
   echo "Installing Ruby library to rubylib/3.1.0..."
@@ -172,14 +168,10 @@ function make_appimage {
   cp -pu "$BUILD/$MKXP_NAME.$BITS.AppImage" "$INSTALL/"
 
   # Copy configuration file
-  if [[ ! -f "$INSTALL/mkxp.json" ]]; then
-    echo "Installing mkxp.json..."
-    cp -pu "$SOURCE/mkxp.json" "$INSTALL/"
+  if [[ ! -f "$INSTALL/modshot.json" ]]; then
+    echo "Installing modshot.json..."
+    cp -pu "$SOURCE/modshot.json" "$INSTALL/"
   fi
-
-  # Copy scripts directory
-  echo "Installing scripts..."
-  cp -pur "$SOURCE/scripts/." "$INSTALL/scripts/"
 
   # Copy Ruby library (gems/extensions)
   echo "Installing Ruby library to rubylib/3.1.0..."

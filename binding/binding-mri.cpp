@@ -268,7 +268,7 @@ static void mriBindingInit() {
     
     rb_gv_set("BTEST", rb_bool_new(shState->config().editor.battleTest));
     
-    /* Set mkxp-z version constants */
+    /* Set ModShot version constants */
     std::string mkxpz_version(MKXPZ_VERSION);
     std::string git_hash;
     
@@ -1141,7 +1141,7 @@ static void mriBindingExecute() {
     RUBY_INIT_STACK;
     ruby_init();
     
-    std::vector<const char*> rubyArgsC{"mkxp-z"};
+    std::vector<const char *> rubyArgsC {"modshot"};
     rubyArgsC.push_back("-e ");
     void *node;
     if (conf.jit.enabled) {
