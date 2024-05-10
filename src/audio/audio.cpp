@@ -37,16 +37,23 @@
 
 struct AudioPrivate
 {
-    
-    std::vector<AudioStream*> bgmTracks;
+	std::vector<AudioStream *> bgmTracks;
 	AudioStream bgs;
 	AudioStream me;
 
 	SoundEmitter se;
 
 	SyncPoint &syncPoint;
-    
-    float volumeRatio;
+
+	struct
+	{
+		int bgm = 100;
+		int sfx = 100;
+
+		std::vector<int> bgmTracksCurrent;
+		int bgsCurrent = 100;
+		int meCurrent = 100;
+	} volume;
 
 	/* The 'MeWatch' is responsible for detecting
 	 * a playing ME, quickly fading out the BGM and
@@ -72,14 +79,14 @@ struct AudioPrivate
 	    : bgs(ALStream::Looped, "bgs"),
 	      me(ALStream::NotLooped, "me"),
 	      se(rtData.config),
-	      syncPoint(rtData.syncPoint),
-          volumeRatio(1)
+	      syncPoint(rtData.syncPoint)
 	{
-        for (int i = 0; i < rtData.config.BGM.trackCount; i++) {
-            std::string id = std::string("bgm" + std::to_string(i));
-            bgmTracks.push_back(new AudioStream(ALStream::Looped, id.c_str()));
-        }
-        
+		for (int i = 0; i < rtData.config.BGM.trackCount; i++) {
+			std::string id = std::string("bgm" + std::to_string(i));
+			bgmTracks.push_back(new AudioStream(ALStream::Looped, id.c_str()));
+			volume.bgmTracksCurrent.push_back(100);
+		}
+
 		meWatch.state = MeNotPlaying;
 		meWatch.thread = createSDLThread
 			<AudioPrivate, &AudioPrivate::meWatchFun>(this, "audio_mewatch");
@@ -89,17 +96,32 @@ struct AudioPrivate
 	{
 		meWatch.termReq.set();
 		SDL_WaitThread(meWatch.thread, 0);
-        for (auto track : bgmTracks)
-            delete track;
+
+		for (AudioStream *track : bgmTracks)
+			delete track;
 	}
-    
-    AudioStream *getTrackByIndex(int index) {
-        if (index < 0) index = 0;
-        if (index > (int)(bgmTracks.size()) - 1) {
-            throw Exception(Exception::MKXPError, "requested BGM track %d out of range (max: %d)", index, bgmTracks.size() - 1);
-        }
-        return bgmTracks[index];
-    }
+
+	AudioStream *getTrackByIndex(int index)
+	{
+		if (index < 0)
+			index = 0;
+
+		if (index > (int)(bgmTracks.size()) - 1)
+			throw Exception(Exception::MKXPError, "requested BGM track %d out of range (max: %d)", index, bgmTracks.size() - 1);
+
+		return bgmTracks[index];
+	}
+
+	void setTrackCurrentVolumeByIndex(int index, int volume)
+	{
+		if (index < 0)
+			index = 0;
+
+		if (index > (int)(bgmTracks.size()) - 1)
+			throw Exception(Exception::MKXPError, "requested BGM track %d to set volume out of range (max: %d)", index, bgmTracks.size() - 1);
+
+		this->volume.bgmTracksCurrent[index] = clamp(volume, 0, 100);
+	}
 
 	void meWatchFun()
 	{
@@ -295,6 +317,7 @@ void Audio::bgmPlay(const char *filename,
                     float pos,
                     int track)
 {
+    int vol = clamp(volume, 0, 100);
     if (track == -127) {
         for (int i = 0; i < (int)p->bgmTracks.size(); i++) {
             if (i == 0) {
@@ -305,7 +328,8 @@ void Audio::bgmPlay(const char *filename,
         
         track = 0;
     }
-	p->getTrackByIndex(track)->play(filename, volume, pitch, pos);
+    p->setTrackCurrentVolumeByIndex(track, vol);
+    p->getTrackByIndex(track)->play(filename, (vol * p->volume.bgm) / 100, pitch, pos);
 }
 
 void Audio::bgmStop(int track)
@@ -342,14 +366,15 @@ int Audio::bgmGetVolume(int track)
 
 void Audio::bgmSetVolume(int volume, int track)
 {
-    float vol = volume / 100.0;
+    float vol = clamp(volume, 0, 100) / 100.0;
     if (track == -127) {
         for (auto track : p->bgmTracks)
             track->setVolume(AudioStream::BaseRatio, vol);
         
         return;
     }
-    p->getTrackByIndex(track)->setVolume(AudioStream::Base, vol);
+    p->setTrackCurrentVolumeByIndex(track, clamp(volume, 0, 100));
+    p->getTrackByIndex(track)->setVolume(AudioStream::Base, ((float)(vol * p->volume.bgm)) / 100.0f);
 }
 
 
@@ -358,7 +383,9 @@ void Audio::bgsPlay(const char *filename,
                     int pitch,
                     float pos)
 {
-	p->bgs.play(filename, volume, pitch, pos);
+	int vol = clamp(volume, 0, 100);
+	p->volume.bgsCurrent = vol;
+	p->bgs.play(filename, (vol * p->volume.sfx) / 100, pitch, pos);
 }
 
 void Audio::bgsStop()
@@ -376,7 +403,9 @@ void Audio::mePlay(const char *filename,
                    int volume,
                    int pitch)
 {
-	p->me.play(filename, volume, pitch);
+	int vol = clamp(volume, 0, 100);
+	p->volume.meCurrent = vol;
+	p->me.play(filename, (vol * p->volume.bgm) / 100, pitch);
 }
 
 void Audio::meStop()
@@ -394,7 +423,8 @@ void Audio::sePlay(const char *filename,
                    int volume,
                    int pitch)
 {
-	p->se.play(filename, volume, pitch);
+	int vol = clamp(volume, 0, 100);
+	p->se.play(filename, (vol * p->volume.sfx) / 100, pitch);
 }
 
 void Audio::seStop()
@@ -426,6 +456,42 @@ void Audio::reset()
 	p->bgs.stop();
 	p->me.stop();
 	p->se.stop();
+}
+
+int Audio::getGlobalBGMVolume() const
+{
+	return p->volume.bgm;
+}
+
+int Audio::getGlobalSFXVolume() const
+{
+	return p->volume.sfx;
+}
+
+void Audio::setGlobalBGMVolume(int value)
+{
+	p->volume.bgm = clamp(value, 0, 100);
+
+	int i = 0;
+	for (AudioStream *track : p->bgmTracks) {
+		track->lockStream();
+		track->setVolume(AudioStream::Base, ((float)(p->volume.bgm * p->volume.bgmTracksCurrent[i])) / 10000.0f);
+		track->unlockStream();
+		i++;
+	}
+
+	p->me.lockStream();
+	p->me.setVolume(AudioStream::Base, ((float)(p->volume.bgm * p->volume.meCurrent)) / 10000.0f);
+	p->me.unlockStream();
+}
+
+void Audio::setGlobalSFXVolume(int value)
+{
+	p->volume.sfx = clamp(value, 0, 100);
+
+	p->bgs.lockStream();
+	p->bgs.setVolume(AudioStream::Base, ((float)(p->volume.sfx * p->volume.bgsCurrent)) / 10000.0f);
+	p->bgs.unlockStream();
 }
 
 Audio::~Audio() { delete p; }

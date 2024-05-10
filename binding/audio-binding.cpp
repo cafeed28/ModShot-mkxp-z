@@ -87,6 +87,21 @@ RB_METHOD(audio_##entity##Fade) \
 
 #define MAYBE_NIL_TRACK(t) t == Qnil ? -127 : NUM2INT(t)
 
+#define DEF_AUDIO_PROP_I(PropName) \
+RB_METHOD(audio##Get##PropName) \
+{ \
+	RB_UNUSED_PARAM; \
+	return rb_fix_new(shState->audio().get##PropName()); \
+} \
+RB_METHOD(audio##Set##PropName) \
+{ \
+	RB_UNUSED_PARAM; \
+	int value; \
+	rb_get_args(argc, argv, "i", &value RB_ARG_END); \
+	shState->audio().set##PropName(value); \
+	return rb_fix_new(value); \
+}
+
 RB_METHOD(audio_bgmPlay)
 {
     RB_UNUSED_PARAM;
@@ -141,6 +156,9 @@ DEF_PLAY_STOP_POS( bgs )
 
 DEF_PLAY_STOP( me )
 
+DEF_AUDIO_PROP_I(GlobalBGMVolume)
+DEF_AUDIO_PROP_I(GlobalSFXVolume)
+
 //DEF_FADE( bgm )
 RB_METHOD(audio_bgmFade)
 {
@@ -190,6 +208,9 @@ RB_METHOD(audioReset)
 #define BIND_POS(entity) \
 	_rb_define_module_function(module, #entity "_pos", audio_##entity##Pos);
 
+#define INIT_AUDIO_PROP_BIND(PropName, prop_name_s) \
+	_rb_define_module_function(module, prop_name_s, audio##Get##PropName); \
+	_rb_define_module_function(module, prop_name_s "=", audio##Set##PropName); \
 
 void
 audioBindingInit()
@@ -197,10 +218,14 @@ audioBindingInit()
 	VALUE module = rb_define_module("Audio");
 
 	BIND_PLAY_STOP_FADE( bgm );
-    _rb_define_module_function(module, "bgm_volume", audio_bgmGetVolume);
-    _rb_define_module_function(module, "bgm_set_volume", audio_bgmSetVolume);
 	BIND_PLAY_STOP_FADE( bgs );
 	BIND_PLAY_STOP_FADE( me  );
+
+	_rb_define_module_function(module, "bgm_get_volume", audio_bgmGetVolume);
+	_rb_define_module_function(module, "bgm_set_volume", audio_bgmSetVolume);
+
+	INIT_AUDIO_PROP_BIND(GlobalBGMVolume, "bgm_volume");
+	INIT_AUDIO_PROP_BIND(GlobalSFXVolume, "sfx_volume");
 
 	BIND_POS( bgm );
 	BIND_POS( bgs );
