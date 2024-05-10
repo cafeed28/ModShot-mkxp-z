@@ -31,24 +31,26 @@ DEF_TYPE(Plane);
 DEF_ALLOCFUNC(Plane);
 #endif
 
-RB_METHOD(planeInitialize) {
-  Plane *p = viewportElementInitialize<Plane>(argc, argv, self);
+RB_METHOD(planeInitialize)
+{
+	Plane *p = viewportElementInitialize<Plane>(argc, argv, self);
 
-  setPrivateData(self, p);
+	setPrivateData(self, p);
 
-    GFX_LOCK;
-  p->initDynAttribs();
+	GFX_LOCK;
+	p->initDynAttribs();
+	wrapProperty(self, &p->getColor(), "color", ColorType);
+	wrapProperty(self, &p->getTone(), "tone", ToneType);
+	wrapProperty(self, &p->getSrcRect(), "src_rect", RectType);
+	GFX_UNLOCK;
 
-  wrapProperty(self, &p->getColor(), "color", ColorType);
-  wrapProperty(self, &p->getTone(), "tone", ToneType);
-    GFX_UNLOCK;
-
-  return self;
+	return self;
 }
 
 DEF_GFX_PROP_OBJ_REF(Plane, Bitmap, Bitmap, "bitmap")
 DEF_GFX_PROP_OBJ_VAL(Plane, Color, Color, "color")
 DEF_GFX_PROP_OBJ_VAL(Plane, Tone, Tone, "tone")
+DEF_GFX_PROP_OBJ_VAL(Plane, Rect, SrcRect, "src_rect")
 
 DEF_GFX_PROP_I(Plane, OX)
 DEF_GFX_PROP_I(Plane, OY)
@@ -80,4 +82,5 @@ void planeBindingInit() {
   INIT_PROP_BIND(Plane, BlendType, "blend_type");
   INIT_PROP_BIND(Plane, Color, "color");
   INIT_PROP_BIND(Plane, Tone, "tone");
+  INIT_PROP_BIND(Plane, SrcRect, "src_rect");
 }

@@ -52,6 +52,7 @@ struct PlanePrivate
 	BlendType blendType;
 	Color *color;
 	Tone *tone;
+	Rect *srcRect;
 
 	int ox, oy;
 	float zoomX, zoomY;
@@ -65,6 +66,7 @@ struct PlanePrivate
 	EtcTemps tmp;
 
 	sigslot::connection prepareCon;
+	sigslot::connection srcRectCon;
 
 	PlanePrivate()
 	    : bitmap(0),
@@ -72,10 +74,12 @@ struct PlanePrivate
 	      blendType(BlendNormal),
 	      color(&tmp.color),
 	      tone(&tmp.tone),
+	      srcRect(&tmp.rect),
 	      ox(0), oy(0),
 	      zoomX(1), zoomY(1),
 	      quadSourceDirty(false)
 	{
+		updateSrcRectCon();
 		prepareCon = shState->prepareDraw.connect
 		        (&PlanePrivate::prepare, this);
 
@@ -84,6 +88,7 @@ struct PlanePrivate
 
 	~PlanePrivate()
 	{
+		srcRectCon.disconnect();
 		prepareCon.disconnect();
 		
 		bitmapDisposal();
@@ -95,9 +100,23 @@ struct PlanePrivate
 		bitmapDispCon.disconnect();
 	}
 
+	void onSrcRectChange()
+	{
+		quadSourceDirty = true;
+	}
+
+	void updateSrcRectCon()
+	{
+		srcRectCon.disconnect();
+		srcRectCon = srcRect->valueChanged.connect(&PlanePrivate::onSrcRectChange, this);
+	}
+
 	void updateQuadSource()
 	{
-		if (gl.npot_repeat)
+		if (nullOrDisposed(bitmap))
+			return;
+
+		if (gl.npot_repeat && srcRect->toIntRect() == bitmap->rect())
 		{
 			FloatRect srcRect;
 			srcRect.x = (sceneGeo.orig.x + ox) / zoomX;
@@ -111,12 +130,9 @@ struct PlanePrivate
 			return;
 		}
 
-		if (nullOrDisposed(bitmap))
-			return;
-
 		/* Scaled (zoomed) bitmap dimensions */
-		float sw = bitmap->width()  * zoomX;
-		float sh = bitmap->height() * zoomY;
+		float sw = srcRect->width * zoomX;
+		float sh = srcRect->height * zoomY;
 
 		/* Plane offset wrapped by scaled bitmap dims */
 		float wox = fwrap(ox, sw);
@@ -130,7 +146,7 @@ struct PlanePrivate
 		size_t tilesX = ceil((vpw - sw + wox) / sw) + 1;
 		size_t tilesY = ceil((vph - sh + woy) / sh) + 1;
 
-		FloatRect tex = bitmap->rect();
+		FloatRect tex = srcRect->toFloatRect();
 
 		qArray.resize(tilesX * tilesY);
 
@@ -177,6 +193,7 @@ DEF_ATTR_RD_SIMPLE(Plane, BlendType, int,     p->blendType)
 DEF_ATTR_SIMPLE(Plane, Opacity,   int,     p->opacity)
 DEF_ATTR_SIMPLE(Plane, Color,     Color&, *p->color)
 DEF_ATTR_SIMPLE(Plane, Tone,      Tone&,  *p->tone)
+DEF_ATTR_SIMPLE(Plane, SrcRect,   Rect&,  *p->srcRect)
 
 Plane::~Plane()
 {
@@ -200,6 +217,9 @@ void Plane::setBitmap(Bitmap *value)
 	p->bitmapDispCon = value->wasDisposed.connect(&PlanePrivate::bitmapDisposal, p);
 
 	value->ensureNonMega();
+
+	*p->srcRect = value->rect();
+	p->onSrcRectChange();
 }
 
 void Plane::setOX(int value)
@@ -269,6 +289,9 @@ void Plane::initDynAttribs()
 {
 	p->color = new Color;
 	p->tone = new Tone;
+	p->srcRect = new Rect;
+
+	p->updateSrcRectCon();
 }
 
 void Plane::draw()
