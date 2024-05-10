@@ -1651,6 +1651,19 @@ void Graphics::setFixedAspectRatio(bool value)
     p->updateScreenResoRatio(p->threadData);
 }
 
+bool Graphics::getSmooth() const
+{
+    return (shState->config().smoothScaling > 0);
+}
+
+void Graphics::setSmooth(bool value)
+{
+    if (value)
+        shState->config().smoothScaling = 1; // Bilinear
+    else
+        shState->config().smoothScaling = 0; // Nearest-Neighbor
+}
+
 int Graphics::getSmoothScaling() const
 {
     // Same deal as with fixed aspect ratio
