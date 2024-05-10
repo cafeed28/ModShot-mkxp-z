@@ -243,6 +243,7 @@ struct TilemapPrivate
 	Table *mapData;
 	Table *priorities;
 	bool visible;
+	bool wrapping;
 	Vec2i origin;
 
 	Vec2i dispPos;
@@ -349,6 +350,7 @@ struct TilemapPrivate
 	      mapData(0),
 	      priorities(0),
 	      visible(true),
+	      wrapping(false),
 	      flashAlphaIdx(0),
 	      atlasSizeDirty(false),
 	      atlasDirty(false),
@@ -742,8 +744,17 @@ struct TilemapPrivate
 
 	void handleTile(int x, int y, int z)
 	{
+		int ox = x + viewpPos.x;
+		int oy = y + viewpPos.y;
+
+		if (!wrapping && (ox < 0 || oy < 0 || ox >= mapData->xSize() || oy >= mapData->ySize()))
+			return;
+
+		/*
 		int tileInd =
 			tableGetWrapped(*mapData, x + viewpPos.x, y + viewpPos.y, z);
+		*/
+		int tileInd = tableGetWrapped(*mapData, ox, oy, z);
 
 		/* Check for empty space */
 		if (tileInd < 48)
@@ -804,6 +815,7 @@ struct TilemapPrivate
 	{
 		clearQuadArrays();
 
+		/*
 		int ox = viewpPos.x;
 		int oy = viewpPos.y;
 		int mapW = mapData->xSize();
@@ -828,6 +840,12 @@ struct TilemapPrivate
 			return;
 		for (int x = minX; x <= maxX; ++x)
 			for (int y = minY; y <= maxY; ++y)
+				for (int z = 0; z < mapData->zSize(); ++z)
+					handleTile(x, y, z);
+		*/
+
+		for (int x = 0; x < viewpW; ++x)
+			for (int y = 0; y < viewpH; ++y)
 				for (int z = 0; z < mapData->zSize(); ++z)
 					handleTile(x, y, z);
 	}
@@ -1275,6 +1293,7 @@ DEF_ATTR_RD_SIMPLE(Tilemap, MapData, Table*, p->mapData)
 DEF_ATTR_RD_SIMPLE(Tilemap, FlashData, Table*, p->flashMap.getData())
 DEF_ATTR_RD_SIMPLE(Tilemap, Priorities, Table*, p->priorities)
 DEF_ATTR_RD_SIMPLE(Tilemap, Visible, bool, p->visible)
+DEF_ATTR_SIMPLE(Tilemap, Wrapping, bool, p->wrapping)
 DEF_ATTR_RD_SIMPLE(Tilemap, OX, int, p->origin.x)
 DEF_ATTR_RD_SIMPLE(Tilemap, OY, int, p->origin.y)
 
