@@ -247,6 +247,15 @@ struct RGSSThreadData
     // Set when window is being adjusted (resize, reposition)
     AtomicFlag rqWindowAdjust;
 
+	/* Set when we're currently exiting (for window opacity animation) */
+	AtomicFlag exiting;
+
+	/* Set when game exiting is allowed */
+	AtomicFlag allowExit;
+
+	/* Set when attempting to exit and allowExit is false */
+	AtomicFlag triedExit;
+
 	EventThread *ethread;
 	UnidirMessage<Vec2i> windowSizeMsg;
     UnidirMessage<Vec2i> drawableSizeMsg;
@@ -285,7 +294,8 @@ struct RGSSThreadData
 	      refreshRate(refreshRate),
           scale(scalingFactor),
 	      config(newconf),
-          glContext(ctx)
+          glContext(ctx),
+	      allowExit(true)
 	{}
 };
 

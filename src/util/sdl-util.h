@@ -16,6 +16,11 @@ struct AtomicFlag
 		clear();
 	}
 
+	AtomicFlag(bool value)
+	{
+		SDL_AtomicSet(&atom, value ? 1 : 0);
+	}
+
 	void set()
 	{
 		SDL_AtomicSet(&atom, 1);

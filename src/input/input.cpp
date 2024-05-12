@@ -713,7 +713,9 @@ struct InputPrivate
     unsigned int repeatDelay;
     
     double last_update;
-
+    
+    bool triedExit;
+    
     int vScrollDistance;
     
     struct
@@ -754,6 +756,8 @@ struct InputPrivate
         
         /* Main thread should have these posted by now */
         checkBindingChange(rtData);
+        
+        triedExit = false;
         
         int fps = rtData.config.fixedFramerate;
         if (!fps) fps = (rgssVer >= 2) ? 60 : 40;
@@ -1258,6 +1262,10 @@ void Input::update()
     p->vScrollDistance = SDL_AtomicSet(&EventThread::verticalScrollDistance, 0);
     
     p->last_update = shState->runTime();
+    
+    RGSSThreadData &rtData = shState->rtData();
+    p->triedExit = rtData.triedExit;
+    rtData.triedExit.clear();
 }
 
 std::vector<std::string> Input::getBindings(ButtonCode code) {
@@ -1523,6 +1531,11 @@ const char *Input::getButtonName(SDL_GameControllerButton button) {
         return "Invalid";
     
     return buttonNames[button];
+}
+
+bool Input::hasQuit()
+{
+    return p->triedExit;
 }
 
 Input::~Input()
