@@ -29,9 +29,18 @@
 
 static const int inputMapRowToCode[]
 {
-    Input::Down, Input::Left, Input::Right, Input::Up,
+    Input::Up, Input::Down, Input::Left, Input::Right,
+
+    /*
+    // RGSS variant
     Input::A, Input::B, Input::C,
     Input::X, Input::Y, Input::Z,
+    */
+
+    // OneShot (mkxp-oneshot) variant
+    Input::Action, Input::Cancel, Input::Menu,
+    Input::Items, Input::Run, Input::Deactivate,
+
     Input::L, Input::R
 };
 
@@ -295,19 +304,20 @@ s.d.ca.dir = (axis.value >= 0) ? AxisDir::Positive : AxisDir::Negative;
 #define SET_BINDING(code) bindingNames[@(Input::code)] = @(#code)
 #define SET_BINDING_CUSTOM(code, value) bindingNames[@(Input::code)] = @(value)
 
+    SET_BINDING(Up);
     SET_BINDING(Down);
     SET_BINDING(Left);
     SET_BINDING(Right);
-    SET_BINDING(Up);
-    SET_BINDING(A);
-    SET_BINDING(B);
-    SET_BINDING(C);
-    SET_BINDING(X);
-    SET_BINDING(Y);
-    SET_BINDING(Z);
+    SET_BINDING(Action);
+    SET_BINDING(Cancel);
+    SET_BINDING(Menu);
+    SET_BINDING(Items);
+    SET_BINDING(Run);
+    SET_BINDING(Deactivate);
     SET_BINDING(L);
     SET_BINDING(R);
 
+    /*
 #define SET_BINDING_CONF(code, value) \
 if (!data.config.kbActionNames.value.empty()) bindingNames[@(Input::code)] = \
     @(data.config.kbActionNames.value.c_str())
@@ -320,6 +330,7 @@ if (!data.config.kbActionNames.value.empty()) bindingNames[@(Input::code)] = \
     SET_BINDING_CONF(Z, z);
     SET_BINDING_CONF(L, l);
     SET_BINDING_CONF(R, r);
+    */
 
     BDescVec oldBinds;
     data.bindingUpdateMsg.get(oldBinds);

@@ -197,6 +197,7 @@ void Config::read(int argc, char *argv[]) {
         {"JITMinCalls", 10000},
         {"YJITEnable", false},
         {"dumpAtlas", false},
+        /*
         {"bindingNames", json::object({
             {"a", "A"},
             {"b", "B"},
@@ -207,6 +208,7 @@ void Config::read(int argc, char *argv[]) {
             {"l", "L"},
             {"r", "R"}
         })}
+        */
     });
     
     auto &opts = optsJ.as_object();
@@ -231,7 +233,7 @@ try { exp } catch (...) {}
     
     json::value baseConf = readConfFile(CONF_FILE);
     copyObject(optsJ, baseConf);
-    copyObject(opts["bindingNames"], baseConf.as_object()["bindingNames"], "bindingNames .");
+    //copyObject(opts["bindingNames"], baseConf.as_object()["bindingNames"], "bindingNames .");
     
 #define SET_OPT_CUSTOMKEY(var, key, type) GUARD(var = opts[#key].as_##type();)
 #define SET_OPT(var, type) SET_OPT_CUSTOMKEY(var, var, type)
@@ -324,6 +326,7 @@ try { exp } catch (...) {}
             [](unsigned char c) { return std::tolower(c); });
     fillStringVec(opts["rubyLoadpath"], rubyLoadpaths);
     
+    /*
     auto &bnames = opts["bindingNames"].as_object();
     
 #define BINDING_NAME(btn) kbActionNames.btn = bnames[#btn].as_string()
@@ -335,6 +338,7 @@ try { exp } catch (...) {}
     BINDING_NAME(z);
     BINDING_NAME(l);
     BINDING_NAME(r);
+    */
     
     rgssVersion = clamp(rgssVersion, 0, 3);
     SE.sourceCount = clamp(SE.sourceCount, 1, 64);

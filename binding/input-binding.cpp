@@ -534,32 +534,48 @@ RB_METHOD(inputSetClipboard) {
 struct {
     const char *str;
     Input::ButtonCode val;
-} static buttonCodes[] = {{"DOWN", Input::Down},
-    {"LEFT", Input::Left},
-    {"RIGHT", Input::Right},
-    {"UP", Input::Up},
-    {"C", Input::C},
-    {"Z", Input::Z},
-    {"A", Input::A},
-    {"B", Input::B},
-    {"X", Input::X},
-    {"Y", Input::Y},
-    {"L", Input::L},
-    {"R", Input::R},
-    {"SHIFT", Input::Shift},
-    {"CTRL", Input::Ctrl},
-    {"ALT", Input::Alt},
-    {"F5", Input::F5},
-    {"F6", Input::F6},
-    {"F7", Input::F7},
-    {"F8", Input::F8},
-    {"F9", Input::F9},
-    
-    {"MOUSELEFT", Input::MouseLeft},
-    {"MOUSEMIDDLE", Input::MouseMiddle},
-    {"MOUSERIGHT", Input::MouseRight},
-    {"MOUSEX1", Input::MouseX1},
-    {"MOUSEX2", Input::MouseX2}
+} static buttonCodes[] = {
+    { "UP",    Input::Up    },
+    { "DOWN",  Input::Down  },
+    { "LEFT",  Input::Left  },
+    { "RIGHT", Input::Right },
+
+    /*
+    // RGSS variant
+    { "A", Input::A },
+    { "B", Input::B },
+    { "C", Input::C },
+    { "X", Input::X },
+    { "Y", Input::Y },
+    { "Z", Input::Z },
+    */
+
+    // OneShot (mkxp-oneshot) variant
+    { "ACTION",     Input::Action     },
+    { "CANCEL",     Input::Cancel     },
+    { "MENU",       Input::Menu       },
+    { "ITEMS",      Input::Items      },
+    { "RUN",        Input::Run        },
+    { "DEACTIVATE", Input::Deactivate },
+
+    { "L", Input::L },
+    { "R", Input::R },
+
+    { "SHIFT", Input::Shift },
+    { "CTRL",  Input::Ctrl  },
+    { "ALT",   Input::Alt   },
+
+    { "F5", Input::F5 },
+    { "F6", Input::F6 },
+    { "F7", Input::F7 },
+    { "F8", Input::F8 },
+    { "F9", Input::F9 },
+
+    { "MOUSELEFT",   Input::MouseLeft   },
+    { "MOUSEMIDDLE", Input::MouseMiddle },
+    { "MOUSERIGHT",  Input::MouseRight  },
+    { "MOUSEX1",     Input::MouseX1     },
+    { "MOUSEX2",     Input::MouseX2     }
 };
 
 static elementsN(buttonCodes);

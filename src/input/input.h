@@ -43,8 +43,16 @@ public:
 
 		Down = 2, Left = 4, Right = 6, Up = 8,
 
+		/*
+		// RGSS variant
 		A = 11, B = 12, C = 13,
 		X = 14, Y = 15, Z = 16,
+		*/
+
+		// OneShot (mkxp-oneshot) variant
+		Action = 11, Cancel = 12, Menu = 13,
+		Items = 14, Run = 15, Deactivate = 16,
+
 		L = 17, R = 18,
 
 		Shift = 21, Ctrl = 22, Alt = 23,
@@ -53,9 +61,9 @@ public:
 
 		/* Non-standard extensions */
 		MouseLeft = 38, MouseMiddle = 39, MouseRight = 40,
-        MouseX1 = 41, MouseX2 = 42
+		MouseX1 = 41, MouseX2 = 42
 	};
-    
+
     void recalcRepeat(unsigned int fps);
 
     double getDelta();

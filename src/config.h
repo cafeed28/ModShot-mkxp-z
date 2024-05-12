@@ -147,6 +147,7 @@ struct Config {
 
     bool dumpAtlas;
 
+    /*
     // Keybinding action name mappings
     struct {
         std::string a;
@@ -160,6 +161,7 @@ struct Config {
         std::string l;
         std::string r;
     } kbActionNames;
+    */
     
     std::string userConfPath;
     
