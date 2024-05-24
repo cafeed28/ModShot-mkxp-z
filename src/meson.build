@@ -71,6 +71,11 @@ if get_option('https') == true
     endif
 endif
 
+# Win32 API: Required for GetUserNameEx
+if host_system == 'windows'
+    mkxp_dependencies += cc.find_library('Secur32', required: true)
+endif
+
 mkxp_includes += include_directories(
     '.',
     'audio',
