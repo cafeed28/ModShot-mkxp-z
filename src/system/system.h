@@ -1,20 +1,11 @@
-//
-//  system.h
-//  Player
-//
-//  Created by ゾロアーク on 11/22/20.
-//
-
-#ifndef system_h
-#define system_h
-
-#include <string>
+#ifndef SYSTEM_H
+#define SYSTEM_H
 
 #define MKXPZ_PLATFORM_WINDOWS 0
 #define MKXPZ_PLATFORM_MACOS 1
 #define MKXPZ_PLATFORM_LINUX 2
 
-#ifdef __WIN32__
+#ifdef _WIN32
 #define MKXPZ_PLATFORM MKXPZ_PLATFORM_WINDOWS
 #elif defined __APPLE__
 #define MKXPZ_PLATFORM MKXPZ_PLATFORM_MACOS
@@ -24,19 +15,26 @@
 #error "Can't identify platform."
 #endif
 
-namespace systemImpl {
-enum WineHostType {
-    Windows,
-    Linux,
-    Mac
-};
-std::string getSystemLanguage();
-std::string getUserName();
-int getScalingFactor();
+#include <string>
 
-bool isWine();
-bool isRosetta();
-WineHostType getRealHostType();
+namespace systemImpl
+{
+	enum WineHostType
+	{
+		Windows,
+		Linux,
+		Mac
+	};
+
+	std::string getLanguage();
+	std::string getUserName();
+	std::string getUserFullName();
+
+	int getScalingFactor();
+
+	bool isWine();
+	bool isRosetta();
+	WineHostType getRealHostType();
 }
 
 #ifdef MKXPZ_BUILD_XCODE
@@ -47,4 +45,4 @@ bool isMetalSupported();
 
 namespace mkxp_sys = systemImpl;
 
-#endif /* system_h */
+#endif // SYSTEM_H

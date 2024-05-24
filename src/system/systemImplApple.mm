@@ -1,18 +1,12 @@
-//
-//  systemImplApple.m
-//  Player
-//
-//  Created by ゾロアーク on 11/22/20.
-//
+#import "system.h"
 
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 #import <sys/sysctl.h>
 
-#import "system.h"
 #import "SettingsMenuController.h"
 
-std::string systemImpl::getSystemLanguage()
+std::string systemImpl::getLanguage()
 {
     NSString *languageCode = NSLocale.currentLocale.languageCode;
     NSString *countryCode = NSLocale.currentLocale.countryCode;
@@ -21,7 +15,18 @@ std::string systemImpl::getSystemLanguage()
 
 std::string systemImpl::getUserName()
 {
-    return std::string(NSUserName().UTF8String);
+    NSString *name = NSUserName();
+    return std::string(name.UTF8String);
+}
+
+std::string systemImpl::getUserFullName()
+{
+    NSString *name = NSFullUserName();
+
+    if ([name isEqualToString:@""])
+        name = NSUserName();
+
+    return std::string(name.UTF8String);
 }
 
 int systemImpl::getScalingFactor()
@@ -31,6 +36,7 @@ int systemImpl::getScalingFactor()
 
 bool systemImpl::isWine()
 {
+    // Always false on Mac builds, see systemImpl.cpp
     return false;
 }
 
@@ -52,7 +58,7 @@ systemImpl::WineHostType systemImpl::getRealHostType()
     return WineHostType::Mac;
 }
 
-// constant, if it's not nil then just raise the menu instead
+// Constant, if it's not nil then just raise the menu instead.
 SettingsMenu *smenu = nil;
 
 void openSettingsWindow()

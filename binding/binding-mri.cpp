@@ -125,6 +125,8 @@ RB_METHOD(mkxpIsReallyWindowsHost);
 
 RB_METHOD(mkxpUserLanguage);
 RB_METHOD(mkxpUserName);
+RB_METHOD(mkxpUserFullName);
+
 RB_METHOD(mkxpGameTitle);
 RB_METHOD(mkxpPowerState);
 RB_METHOD(mkxpSettingsMenu);
@@ -234,9 +236,10 @@ static void mriBindingInit() {
     _rb_define_module_function(mod, "is_really_linux?", mkxpIsReallyLinuxHost);
     _rb_define_module_function(mod, "is_really_windows?", mkxpIsReallyWindowsHost);
     
-    
     _rb_define_module_function(mod, "user_language", mkxpUserLanguage);
     _rb_define_module_function(mod, "user_name", mkxpUserName);
+    _rb_define_module_function(mod, "user_fullname", mkxpUserFullName);
+    
     _rb_define_module_function(mod, "game_title", mkxpGameTitle);
     _rb_define_module_function(mod, "power_state", mkxpPowerState);
     _rb_define_module_function(mod, "nproc", mkxpCpuCount);
@@ -484,20 +487,19 @@ RB_METHOD(mkxpIsReallyWindowsHost) {
 RB_METHOD(mkxpUserLanguage) {
     RB_UNUSED_PARAM;
     
-    return rb_utf8_str_new_cstr(mkxp_sys::getSystemLanguage().c_str());
+    return rb_utf8_str_new_cstr(mkxp_sys::getLanguage().c_str());
 }
 
 RB_METHOD(mkxpUserName) {
     RB_UNUSED_PARAM;
     
-    // Using the Windows API isn't working with usernames that involve Unicode
-    // characters for some dumb reason
-#ifdef __WIN32__
-    VALUE env = rb_const_get(rb_mKernel, rb_intern("ENV"));
-    return rb_funcall(env, rb_intern("[]"), 1, rb_str_new_cstr("USERNAME"));
-#else
     return rb_utf8_str_new_cstr(mkxp_sys::getUserName().c_str());
-#endif
+}
+
+RB_METHOD(mkxpUserFullName) {
+    RB_UNUSED_PARAM;
+    
+    return rb_utf8_str_new_cstr(mkxp_sys::getUserFullName().c_str());
 }
 
 RB_METHOD(mkxpGameTitle) {
