@@ -144,3 +144,9 @@ mkxp_sources += files(
     'util/iniconfig.cpp',
     'util/win-consoleutils.cpp'
 )
+
+if host_system == 'linux'
+    mkxp_sources += files(
+        'util/xdg-user-dirs.cpp'
+    )
+endif
