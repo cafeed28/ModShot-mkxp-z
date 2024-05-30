@@ -1318,6 +1318,9 @@ void Graphics::transition(int duration, const char *filename, int vague) {
             simpleShader.setProg(prog);
         }
         
+        if (p->threadData->exiting)
+            SDL_SetWindowOpacity(p->threadData->window, 1.0f - prog);
+        
         /* Draw the composed frame to a buffer first
          * (we need this because we're skipping PingPong) */
         FBO::bind(transBuffer.fbo);

@@ -75,6 +75,7 @@ mkxp_includes += include_directories(
     'filesystem/ghc',
     'input',
     'net',
+    'oneshot',
     'system',
     'util',
     'util/sigslot',
@@ -137,6 +138,8 @@ mkxp_sources += files(
     'net/LUrlParser.cpp',
     'net/net.cpp',
 
+    'oneshot/oneshot.cpp',
+
     'system/systemImpl.cpp',
 
     'theoraplay/theoraplay.c',
@@ -147,6 +150,7 @@ mkxp_sources += files(
 
 if host_system == 'linux'
     mkxp_sources += files(
-        'util/xdg-user-dirs.cpp'
+        'util/xdg-user-dirs.cpp',
+        'oneshot/gnome-fun.cpp'
     )
 endif

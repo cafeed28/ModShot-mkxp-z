@@ -36,6 +36,8 @@
 #include "sharedstate.h"
 #include "graphics.h"
 
+#include "oneshot/oneshot.h"
+
 #ifndef MKXPZ_BUILD_XCODE
 #include "settingsmenu.h"
 #include "gamecontrollerdb.txt.xxd"
@@ -673,6 +675,14 @@ int EventThread::eventFilter(void *data, SDL_Event *event)
             //	case SDL_RENDER_DEVICE_RESET :
             //		Debug() << "****** SDL_RENDER_DEVICE_RESET";
             //		return 0;
+            
+        case SDL_WINDOWEVENT:
+            if (event->window.event == SDL_WINDOWEVENT_MOVED) {
+                if (shState != NULL && shState->rgssVersion > 0)
+                    shState->oneshot().setWindowPos(event->window.data1, event->window.data2);
+                return 0;
+            }
+            return 1;
     }
     
     return 1;

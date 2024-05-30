@@ -104,6 +104,9 @@ void CUSLBindingInit();
 
 void httpBindingInit();
 
+// OneShot bindings
+void oneshotBindingInit();
+
 RB_METHOD(mkxpDelta);
 RB_METHOD(mriPrint);
 RB_METHOD(mriP);
@@ -186,6 +189,9 @@ static void mriBindingInit() {
 #endif
     
     httpBindingInit();
+    
+    // OneShot bindings
+    oneshotBindingInit();
     
     if (rgssVer >= 3) {
         _rb_define_module_function(rb_mKernel, "rgss_main", mriRgssMain);
@@ -271,6 +277,9 @@ static void mriBindingInit() {
     
     rb_gv_set("BTEST", rb_bool_new(shState->config().editor.battleTest));
     
+    /* OneShot also uses $debug in lowercase */
+    rb_gv_set("debug", shState->config().editor.debug ? Qtrue : Qfalse);
+    
     /* Set ModShot version constants */
     std::string mkxpz_version(MKXPZ_VERSION);
     std::string git_hash;
@@ -299,6 +308,7 @@ static void mriBindingInit() {
     rb_define_const(mod, "GIT_HASH_SHORT", rbstr_git_hash_short);
     
     // Automatically load zlib if it's present -- the correct way this time
+    /*
     int state;
     rb_eval_string_protect("require('zlib') if !Kernel.const_defined?(:Zlib)", &state);
     if (state) {
@@ -306,6 +316,7 @@ static void mriBindingInit() {
         << ((MKXPZ_PLATFORM == MKXPZ_PLATFORM_MACOS) ? "zlib.bundle" : "zlib.so")
         << "is present and reachable by Ruby's loadpath.";
     }
+    */
     
     // Set $stdout and its ilk accordingly on Windows
     // I regret teaching you that word

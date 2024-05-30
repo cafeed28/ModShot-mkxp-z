@@ -37,7 +37,9 @@ mkxp_binding_sources = files(
     'tilemap-binding.cpp',
     'tilemapvx-binding.cpp',
     'filesystem-binding.cpp',
-    'http-binding.cpp'
+    'http-binding.cpp',
+
+    'oneshot/oneshot-binding.cpp'
 )
 
 if mkxp_steam
