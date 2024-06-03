@@ -83,6 +83,7 @@ DEF_GFX_PROP_F(Sprite, PatternZoomY)
 DEF_GFX_PROP_B(Sprite, Mirror)
 DEF_GFX_PROP_B(Sprite, PatternTile)
 DEF_GFX_PROP_B(Sprite, Invert)
+DEF_GFX_PROP_B(Sprite, Obscured)
 
 RB_METHOD(spriteWidth) {
     RB_UNUSED_PARAM;
@@ -150,6 +151,7 @@ void spriteBindingInit() {
     INIT_PROP_BIND(Sprite, PatternZoomX, "pattern_zoom_x");
     INIT_PROP_BIND(Sprite, PatternZoomY, "pattern_zoom_y");
     INIT_PROP_BIND(Sprite, Invert, "invert");
+    INIT_PROP_BIND(Sprite, Obscured, "obscured");
     
     INIT_PROP_BIND(Sprite, WaveAmp, "wave_amp");
     INIT_PROP_BIND(Sprite, WaveLength, "wave_length");

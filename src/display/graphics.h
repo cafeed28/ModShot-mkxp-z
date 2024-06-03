@@ -23,6 +23,7 @@
 #define GRAPHICS_H
 
 #include "util.h"
+#include "gl-util.h"
 
 class Scene;
 class Bitmap;
@@ -98,6 +99,8 @@ public:
     
     void lock(bool force = false);
     void unlock(bool force = false);
+
+	const TEX::ID &obscuredTex() const;
 
 private:
 	Graphics(RGSSThreadData *data);

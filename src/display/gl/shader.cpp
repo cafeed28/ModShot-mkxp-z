@@ -61,6 +61,7 @@
 #include "blurH.vert.xxd"
 #include "blurV.vert.xxd"
 #include "tilemapvx.vert.xxd"
+#include "obscured.frag.xxd"
 #endif
 
 #ifdef MKXPZ_BUILD_XCODE
@@ -399,6 +400,20 @@ BicubicSpriteShader::BicubicSpriteShader()
 void BicubicSpriteShader::setSharpness(int sharpness)
 {
 	gl.Uniform2f(u_bc, 1.f - sharpness * 0.01f, sharpness * 0.005f);
+}
+
+ObscuredShader::ObscuredShader()
+{
+	INIT_SHADER(simple, obscured, ObscuredShader);
+
+	ShaderBase::init();
+
+	GET_U(obscured);
+}
+
+void ObscuredShader::setObscured(const TEX::ID value)
+{
+	setTexUniform(u_obscured, 1, value);
 }
 
 Lanczos3SpriteShader::Lanczos3SpriteShader()

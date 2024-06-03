@@ -25,7 +25,8 @@ mkxp_shaders = files(
     'tilemapvx.vert',
     'flashMap.frag',
     'bicubic.frag',
-    'lanczos3.frag'
+    'lanczos3.frag',
+    'obscured.frag'
 )
 
 # xBRZ shader is licensed under GPLv3, so checking for enabled OpenSSL support

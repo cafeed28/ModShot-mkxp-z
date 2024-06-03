@@ -330,6 +330,18 @@ private:
 	GLint u_source, u_destination, u_subRect, u_opacity;
 };
 
+/* Obscured graphic */
+class ObscuredShader : public ShaderBase
+{
+public:
+	ObscuredShader();
+
+	void setObscured(const TEX::ID value);
+
+private:
+	GLint u_obscured;
+};
+
 class Lanczos3Shader : public SimpleShader
 {
 public:
@@ -419,6 +431,7 @@ struct ShaderSet
 	SimpleMatrixShader simpleMatrix;
 	BlurShader blur;
 	TilemapVXShader tilemapVX;
+	ObscuredShader obscured;
 	BicubicShader bicubic;
 	Lanczos3Shader lanczos3;
 #ifdef MKXPZ_SSL

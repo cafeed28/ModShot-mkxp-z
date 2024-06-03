@@ -45,6 +45,7 @@
 #include "util.h"
 #include "input.h"
 #include "sprite.h"
+#include "oneshot/oneshot.h"
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -833,6 +834,8 @@ struct GraphicsPrivate {
      * (disposed on reset) */
     IntruList<Disposable> dispList;
     
+    TEX::ID obscuredTex;
+    
     GraphicsPrivate(RGSSThreadData *rtData)
     : scResLores(DEF_SCREEN_W, DEF_SCREEN_H),
     scRes(rtData->config.enableHires ? (int)lround(rtData->config.framebufferScalingFactor * DEF_SCREEN_W) : DEF_SCREEN_W,
@@ -866,6 +869,16 @@ struct GraphicsPrivate {
         screenQuad.setTexPosRect(screenRect, screenRect);
         
         fpsLimiter.resetFrameAdjust();
+        
+        obscuredTex = TEX::gen();
+        TEX::bind(obscuredTex);
+        TEX::setRepeat(false);
+        TEX::setSmooth(false);
+#ifdef GLES2_HEADER
+        gl.TexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 640, 480, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
+#else
+        gl.TexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 640, 480, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+#endif
     }
     
     ~GraphicsPrivate() {
@@ -1040,6 +1053,16 @@ struct GraphicsPrivate {
     }
     
     void redrawScreen() {
+        if (shState->oneshot().obscuredDirty) {
+            TEX::bind(obscuredTex);
+#ifdef GLES2_HEADER
+            TEX::uploadSubImage(0, 0, 640, 480, shState->oneshot().obscuredMap().data(), GL_LUMINANCE);
+#else
+            TEX::uploadSubImage(0, 0, 640, 480, shState->oneshot().obscuredMap().data(), GL_RED);
+#endif
+            shState->oneshot().obscuredDirty = false;
+        }
+        
         screen.composite();
         
         // maybe unspaghetti this later
@@ -1221,6 +1244,8 @@ void Graphics::update(bool checkForShutdown) {
             p->fpsLimiter.resetFrameAdjust();
         }
     }
+    
+    shState->oneshot().update();
     
     p->checkResize();
     p->redrawScreen();
@@ -1775,6 +1800,11 @@ void Graphics::lock(bool force) {
 
 void Graphics::unlock(bool force) {
     p->releaseLock(force);
+}
+
+const TEX::ID &Graphics::obscuredTex() const
+{
+    return p->obscuredTex;
 }
 
 void Graphics::addDisposable(Disposable *d) { p->dispList.append(d->link); }

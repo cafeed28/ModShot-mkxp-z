@@ -313,6 +313,13 @@ void EventThread::process(RGSSThreadData &rtData)
                         resetInputStates();
                         
                         break;
+                        
+#ifdef __APPLE__
+                    case SDL_WINDOWEVENT_MOVED:
+                        if (shState != NULL && event.window.data1 && event.window.data2)
+                            shState->oneshot().setWindowPos(event.window.data1, event.window.data2);
+                        break;
+#endif
                 }
                 break;
                 
