@@ -9,6 +9,8 @@ struct RGSSThreadData;
 
 struct OneshotPrivate;
 
+class Journal;
+
 class Oneshot
 {
 private:
@@ -18,6 +20,8 @@ private:
 public:
 	Oneshot(RGSSThreadData &threadData);
 	~Oneshot();
+
+	Journal *journal;
 
 	// Message box types
 	enum
@@ -46,7 +50,7 @@ public:
 	const std::string &savePath() const;
 	const std::string &docsPath() const;
 	const std::string &gamePath() const;
-	const std::string &journal() const;
+	const std::string &journalName() const;
 	const std::vector<uint8_t> &obscuredMap() const;
 	bool obscuredCleared() const;
 	bool allowExit() const;

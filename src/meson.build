@@ -139,6 +139,7 @@ mkxp_sources += files(
     'net/net.cpp',
 
     'oneshot/oneshot.cpp',
+    'oneshot/journal.cpp',
 
     'system/systemImpl.cpp',
 

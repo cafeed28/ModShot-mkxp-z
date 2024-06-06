@@ -39,7 +39,8 @@ mkxp_binding_sources = files(
     'filesystem-binding.cpp',
     'http-binding.cpp',
 
-    'oneshot/oneshot-binding.cpp'
+    'oneshot/oneshot-binding.cpp',
+    'oneshot/journal-binding.cpp'
 )
 
 if mkxp_steam

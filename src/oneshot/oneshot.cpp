@@ -1,4 +1,5 @@
 #include "oneshot.h"
+#include "journal.h"
 #include "eventthread.h"
 #include "system/system.h"
 #include "util/debugwriter.h"
@@ -160,6 +161,8 @@ Oneshot::Oneshot(RGSSThreadData &threadData) : threadData(threadData)
 {
 	p = new OneshotPrivate();
 
+	journal = new Journal();
+
 #if MKXPZ_PLATFORM == MKXPZ_PLATFORM_WINDOWS
 	p->os = "windows";
 #elif MKXPZ_PLATFORM == MKXPZ_PLATFORM_MACOS
@@ -252,6 +255,7 @@ Oneshot::Oneshot(RGSSThreadData &threadData) : threadData(threadData)
 
 Oneshot::~Oneshot()
 {
+	delete journal;
 	delete p;
 }
 
@@ -504,7 +508,7 @@ const std::string &Oneshot::gamePath() const
 	return p->gamePath;
 }
 
-const std::string &Oneshot::journal() const
+const std::string &Oneshot::journalName() const
 {
 	return p->journal;
 }

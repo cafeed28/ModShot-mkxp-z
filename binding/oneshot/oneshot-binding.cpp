@@ -131,7 +131,7 @@ void oneshotBindingInit()
 	rb_const_set(module, rb_intern("SAVE_PATH"), rb_str_new2(shState->oneshot().savePath().c_str()));
 	rb_const_set(module, rb_intern("DOCS_PATH"), rb_str_new2(shState->oneshot().docsPath().c_str()));
 	rb_const_set(module, rb_intern("GAME_PATH"), rb_str_new2(shState->oneshot().gamePath().c_str()));
-	rb_const_set(module, rb_intern("JOURNAL"), rb_str_new2(shState->oneshot().journal().c_str()));
+	rb_const_set(module, rb_intern("JOURNAL"), rb_str_new2(shState->oneshot().journalName().c_str()));
 	rb_const_set(module, rb_intern("LANG"), rb_str_new2(shState->oneshot().lang().c_str()));
 
 	rb_const_set(moduleMsg, rb_intern("INFO"), INT2FIX(Oneshot::MSG_INFO));
