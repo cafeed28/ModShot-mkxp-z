@@ -107,6 +107,7 @@ void httpBindingInit();
 // OneShot bindings
 void oneshotBindingInit();
 void journalBindingInit();
+void nikoBindingInit();
 
 RB_METHOD(mkxpDelta);
 RB_METHOD(mriPrint);
@@ -194,6 +195,7 @@ static void mriBindingInit() {
     // OneShot bindings
     oneshotBindingInit();
     journalBindingInit();
+    nikoBindingInit();
     
     if (rgssVer >= 3) {
         _rb_define_module_function(rb_mKernel, "rgss_main", mriRgssMain);

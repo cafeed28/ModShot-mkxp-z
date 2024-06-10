@@ -15,6 +15,9 @@ public:
 	bool isActive() const;
 	void set(const char *name);
 	void setLang(const char *lang);
+
+	void nikoPrepare();
+	void nikoStart();
 };
 
 #endif // ONESHOT_JOURNAL_H
