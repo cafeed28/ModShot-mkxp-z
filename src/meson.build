@@ -140,6 +140,7 @@ mkxp_sources += files(
 
     'oneshot/oneshot.cpp',
     'oneshot/journal.cpp',
+    'oneshot/wallpaper.cpp',
 
     'system/systemImpl.cpp',
 
@@ -152,6 +153,7 @@ mkxp_sources += files(
 if host_system == 'linux'
     mkxp_sources += files(
         'util/xdg-user-dirs.cpp',
-        'oneshot/gnome-fun.cpp'
+        'oneshot/gnome-fun.cpp',
+        'oneshot/xfconf-fun.cpp'
     )
 endif

@@ -41,7 +41,8 @@ mkxp_binding_sources = files(
 
     'oneshot/oneshot-binding.cpp',
     'oneshot/journal-binding.cpp',
-    'oneshot/niko-binding.cpp'
+    'oneshot/niko-binding.cpp',
+    'oneshot/wallpaper-binding.cpp'
 )
 
 if mkxp_steam

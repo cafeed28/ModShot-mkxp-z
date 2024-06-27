@@ -10,6 +10,7 @@ struct RGSSThreadData;
 struct OneshotPrivate;
 
 class Journal;
+class Wallpaper;
 
 class Oneshot
 {
@@ -22,6 +23,7 @@ public:
 	~Oneshot();
 
 	Journal *journal;
+	Wallpaper *wallpaper;
 
 	// Message box types
 	enum

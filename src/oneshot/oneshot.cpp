@@ -1,5 +1,6 @@
 #include "oneshot.h"
 #include "journal.h"
+#include "wallpaper.h"
 #include "eventthread.h"
 #include "system/system.h"
 #include "util/debugwriter.h"
@@ -161,8 +162,6 @@ Oneshot::Oneshot(RGSSThreadData &threadData) : threadData(threadData)
 {
 	p = new OneshotPrivate();
 
-	journal = new Journal();
-
 #if MKXPZ_PLATFORM == MKXPZ_PLATFORM_WINDOWS
 	p->os = "windows";
 #elif MKXPZ_PLATFORM == MKXPZ_PLATFORM_MACOS
@@ -209,31 +208,32 @@ Oneshot::Oneshot(RGSSThreadData &threadData) : threadData(threadData)
 
 #if MKXPZ_PLATFORM == MKXPZ_PLATFORM_LINUX
 	char const *xdg_current_desktop = SDL_getenv("XDG_CURRENT_DESKTOP");
-
 	if (xdg_current_desktop && xdg_current_desktop[0] != '\0') {
 		std::string desktop(xdg_current_desktop);
 		std::transform(desktop.begin(), desktop.end(), desktop.begin(), ::tolower);
 
-		if (desktop.find("cinnamon") != std::string::npos) {
+		if (desktop.find("gnome") != std::string::npos || desktop.find("unity") != std::string::npos) {
+			desktopEnv = "gnome";
+		} else if (desktop.find("cinnamon") != std::string::npos) {
 			desktopEnv = "cinnamon";
-		} else if (desktop.find("pantheon") != std::string::npos) {
-			desktopEnv = "pantheon";
+		} else if (desktop.find("mate") != std::string::npos) {
+			desktopEnv = "mate";
 		} else if (desktop.find("deepin") != std::string::npos || desktop.find("dde") != std::string::npos) {
 			desktopEnv = "deepin";
-		} else if (desktop.find("enlightenment") != std::string::npos) {
-			desktopEnv = "enlightenment";
-		} else if (desktop.find("gnome") != std::string::npos || desktop.find("unity") != std::string::npos) {
-			desktopEnv = "gnome";
+		} else if (desktop.find("xfce") != std::string::npos) {
+			desktopEnv = "xfce";
 		} else if (desktop.find("kde") != std::string::npos) {
 			desktopEnv = "kde";
 		} else if (desktop.find("lxde") != std::string::npos) {
 			desktopEnv = "lxde";
 		} else if (desktop.find("lxqt") != std::string::npos) {
 			desktopEnv = "lxqt";
-		} else if (desktop.find("mate") != std::string::npos) {
-			desktopEnv = "mate";
-		} else if (desktop.find("xfce") != std::string::npos) {
-			desktopEnv = "xfce";
+		} else if (desktop.find("enlightenment") != std::string::npos) {
+			desktopEnv = "enlightenment";
+		} else if (desktop.find("pantheon") != std::string::npos) {
+			desktopEnv = "pantheon";
+		} else {
+			desktopEnv = "nope";
 		}
 	} else {
 		desktopEnv = "nope";
@@ -247,14 +247,24 @@ Oneshot::Oneshot(RGSSThreadData &threadData) : threadData(threadData)
 	if (HAVE_GTK != NULL)
 		if (dynGnome.gtk_init_check(NULL, NULL) == TRUE)
 			p->gtkIsInit = true;
+
+	// Init dynamic Gio library for wallpaper settings
+	initGioFunctions();
+
+	// Init dynamic Gdk library for displays detection
+	initGdkFunctions();
 #endif
 
 	obscuredDirty = true;
 	p->obscuredMap.resize(640 * 480, 255);
+
+	journal = new Journal();
+	wallpaper = new Wallpaper();
 }
 
 Oneshot::~Oneshot()
 {
+	delete wallpaper;
 	delete journal;
 	delete p;
 }
