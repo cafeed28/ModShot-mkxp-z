@@ -39,6 +39,10 @@
 #include "exception.h"
 #include "sharedmidistate.h"
 
+#ifdef MKXPZ_STEAM
+#include "steam/steam.h"
+#endif
+
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
@@ -80,6 +84,10 @@ struct SharedStatePrivate
 	Audio audio;
 
 	Oneshot oneshot;
+
+#ifdef MKXPZ_STEAM
+	Steam steam;
+#endif
 
 	GLState _glState;
 
@@ -247,6 +255,9 @@ GSATT(Graphics&, graphics)
 GSATT(Input&, input)
 GSATT(Audio&, audio)
 GSATT(Oneshot&, oneshot)
+#ifdef MKXPZ_STEAM
+GSATT(Steam&, steam)
+#endif
 GSATT(GLState&, _glState)
 GSATT(ShaderSet&, shaders)
 GSATT(TexPool&, texPool)

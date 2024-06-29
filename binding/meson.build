@@ -38,6 +38,7 @@ mkxp_binding_sources = files(
     'tilemapvx-binding.cpp',
     'filesystem-binding.cpp',
     'http-binding.cpp',
+    'steam-binding.cpp',
 
     'oneshot/oneshot-binding.cpp',
     'oneshot/journal-binding.cpp',
@@ -45,11 +46,11 @@ mkxp_binding_sources = files(
     'oneshot/wallpaper-binding.cpp'
 )
 
-if mkxp_steam
-    mkxp_binding_sources += files(
-        'cusl-binding.cpp'
-    )
-endif
+#if mkxp_steam
+#    mkxp_binding_sources += files(
+#        'cusl-binding.cpp'
+#    )
+#endif
 
 if mkxp_miniffi
     mkxp_binding_sources += files(

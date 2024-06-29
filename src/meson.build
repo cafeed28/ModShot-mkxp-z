@@ -150,6 +150,16 @@ mkxp_sources += files(
     'util/win-consoleutils.cpp'
 )
 
+if mkxp_steam
+    mkxp_includes += include_directories(
+        'steam'
+    )
+
+    mkxp_sources += files(
+        'steam/steam.cpp'
+    )
+endif
+
 if host_system == 'linux'
     mkxp_sources += files(
         'util/xdg-user-dirs.cpp',

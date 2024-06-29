@@ -98,9 +98,11 @@ void fileIntBindingInit();
 void MiniFFIBindingInit();
 #endif
 
+/*
 #ifdef MKXPZ_STEAM
 void CUSLBindingInit();
 #endif
+*/
 
 void httpBindingInit();
 
@@ -109,6 +111,8 @@ void oneshotBindingInit();
 void journalBindingInit();
 void nikoBindingInit();
 void wallpaperBindingInit();
+
+void steamBindingInit();
 
 RB_METHOD(mkxpDelta);
 RB_METHOD(mriPrint);
@@ -187,9 +191,11 @@ static void mriBindingInit() {
     MiniFFIBindingInit();
 #endif
     
+    /*
 #ifdef MKXPZ_STEAM
     CUSLBindingInit();
 #endif
+    */
     
     httpBindingInit();
     
@@ -198,6 +204,8 @@ static void mriBindingInit() {
     journalBindingInit();
     nikoBindingInit();
     wallpaperBindingInit();
+    
+    steamBindingInit();
     
     if (rgssVer >= 3) {
         _rb_define_module_function(rb_mKernel, "rgss_main", mriRgssMain);
