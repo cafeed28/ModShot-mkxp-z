@@ -292,7 +292,10 @@ static void mriBindingInit() {
     rb_gv_set("BTEST", rb_bool_new(shState->config().editor.battleTest));
     
     /* OneShot also uses $debug in lowercase */
-    rb_gv_set("debug", shState->config().editor.debug ? Qtrue : Qfalse);
+    if (shState->config().editor.debug || shState->config().debugMode)
+        rb_gv_set("debug", Qtrue);
+    else
+        rb_gv_set("debug", Qfalse);
     
     /* Set ModShot version constants */
     std::string mkxpz_version(MKXPZ_VERSION);
