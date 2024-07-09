@@ -83,34 +83,62 @@ static elementsN(vButtons);
 std::string sourceDescString(const SourceDesc &src)
 {
 	char buf[128];
-	//char pos;
 
 	switch (src.type)
 	{
-	case Invalid:
-		return std::string();
+		case Invalid:
+			return std::string();
 
-	case Key:
-	{
-		if (src.d.scan == SDL_SCANCODE_LSHIFT)
-			return "Shift";
+		case Key:
+		{
+			if (src.d.scan == SDL_SCANCODE_LSHIFT)
+				return "Shift";
 
-		SDL_Keycode key = SDL_GetKeyFromScancode(src.d.scan);
-		const char *str = SDL_GetKeyName(key);
+			SDL_Keycode key = SDL_GetKeyFromScancode(src.d.scan);
+			const char *str = SDL_GetKeyName(key);
 
-		if (*str == '\0')
-			return "Unknown key";
-		else
-			return str;
-	}
-	case CButton:
-		snprintf(buf, sizeof(buf), "%s", shState->input().getButtonName(src.d.cb));
-		return buf;
+			if (*str == '\0') {
+				return "Unknown key";
+			} else {
+				snprintf(buf, sizeof(buf), "%s Key", str);
+				return buf;
+			}
+		}
 
-	case CAxis:
-		snprintf(buf, sizeof(buf), "%s%c",
-		         shState->input().getAxisName(src.d.ca.axis), src.d.ca.dir == Negative ? '-' : '+');
-		return buf;
+		case CButton:
+			snprintf(buf, sizeof(buf), "%s", shState->input().getButtonName(src.d.cb));
+			return buf;
+
+		case CAxis:
+			if (src.d.ca.axis >= SDL_CONTROLLER_AXIS_LEFTX && src.d.ca.axis <= SDL_CONTROLLER_AXIS_RIGHTY) {
+				char bufDir[16];
+				switch (src.d.ca.axis)
+				{
+					case SDL_CONTROLLER_AXIS_LEFTX:
+					case SDL_CONTROLLER_AXIS_RIGHTX:
+						if (src.d.ca.dir == Negative)
+							snprintf(bufDir, sizeof(bufDir), "Left");
+						else
+							snprintf(bufDir, sizeof(bufDir), "Right");
+						break;
+
+					case SDL_CONTROLLER_AXIS_LEFTY:
+					case SDL_CONTROLLER_AXIS_RIGHTY:
+						if (src.d.ca.dir == Negative)
+							snprintf(bufDir, sizeof(bufDir), "Up");
+						else
+							snprintf(bufDir, sizeof(bufDir), "Down");
+						break;
+
+					default:
+						snprintf(bufDir, sizeof(bufDir), "Unknown");
+						break;
+				}
+				snprintf(buf, sizeof(buf), "%s (%s)", shState->input().getAxisName(src.d.ca.axis), bufDir);
+			} else {
+				snprintf(buf, sizeof(buf), "%s", shState->input().getAxisName(src.d.ca.axis));
+			}
+			return buf;
 	}
 
 	assert(!"unreachable");

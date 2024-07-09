@@ -278,12 +278,48 @@ s.d.ca.dir = (axis.value >= 0) ? AxisDir::Positive : AxisDir::Negative;
     switch (desc.type)
     {
         case Key:
+        {
             if (desc.d.scan == SDL_SCANCODE_LSHIFT)
                 return @"Shift";
-            return @(SDL_GetScancodeName(desc.d.scan));
+
+            SDL_Keycode key = SDL_GetKeyFromScancode(desc.d.scan);
+			const char *str = SDL_GetKeyName(key);
+
+			if (*str == '\0')
+				return @"Unknown key";
+			else
+                return [NSString stringWithFormat:@"%s Key", str];
+        }
 
         case CAxis:
-            return [NSString stringWithFormat:@"%s%s", shState->input().getAxisName(desc.d.ca.axis), desc.d.ca.dir == Negative ? "-" : "+"];
+            if (desc.d.ca.axis >= SDL_CONTROLLER_AXIS_LEFTX && desc.d.ca.axis <= SDL_CONTROLLER_AXIS_RIGHTY) {
+				NSString *bufDir;
+				switch (desc.d.ca.axis)
+				{
+					case SDL_CONTROLLER_AXIS_LEFTX:
+					case SDL_CONTROLLER_AXIS_RIGHTX:
+						if (desc.d.ca.dir == Negative)
+							bufDir = @"Left";
+						else
+							bufDir = @"Right";
+						break;
+
+					case SDL_CONTROLLER_AXIS_LEFTY:
+					case SDL_CONTROLLER_AXIS_RIGHTY:
+						if (desc.d.ca.dir == Negative)
+							bufDir = @"Up";
+						else
+							bufDir = @"Down";
+						break;
+
+					default:
+						bufDir = @"Unknown";
+						break;
+				}
+				return [NSString stringWithFormat:@"%s (%@)", shState->input().getAxisName(desc.d.ca.axis), bufDir];
+			} else {
+                return @(shState->input().getAxisName(desc.d.ca.axis));
+			}
 
         case CButton:
             return @(shState->input().getButtonName(desc.d.cb));

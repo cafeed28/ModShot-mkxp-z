@@ -436,36 +436,36 @@ std::unordered_map<std::string, SDL_GameControllerButton> strToGCButton {
 #undef m
 
 const char *axisNames[] {
-    "LStick X",
-    "LStick Y",
-    "RStick X",
-    "RStick Y",
-    "LTrigger",
-    "RTrigger"
+    "Left Stick",
+    "Left Stick",
+    "Right Stick",
+    "Right Stick",
+    "Left Trigger",
+    "Right Trigger"
 };
 
 const char *buttonNames[] {
-    "Pad A",
-    "Pad B",
-    "Pad X",
-    "Pad Y",
-    "Pad Back",
-    "Pad Guide",
-    "Pad Start",
-    "Pad LS",
-    "Pad RS",
-    "Pad LB",
-    "Pad RB",
-    "Pad Up",
-    "Pad Down",
-    "Pad Left",
-    "Pad Right",
-    "Pad Misc",
-    "Pad Paddle1",
-    "Pad Paddle2",
-    "Pad Paddle3",
-    "Pad Paddle4",
-    "Pad Touchpad"
+    "A Button",
+    "B Button",
+    "X Button",
+    "Y Button",
+    "Back Button",
+    "Guide Button",
+    "Start Button",
+    "Left Stick",
+    "Right Stick",
+    "Left Shoulder",
+    "Right Shoulder",
+    "D-Pad (Up)",
+    "D-Pad (Down)",
+    "D-Pad (Left)",
+    "D-Pad (Right)",
+    "Misc button",
+    "Paddle (P1)",
+    "Paddle (P3)",
+    "Paddle (P2)",
+    "Paddle (P4)",
+    "Touchpad"
 };
 
 struct ButtonState
