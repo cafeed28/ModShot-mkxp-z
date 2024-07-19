@@ -48,6 +48,8 @@
 
 #include "system/system.h"
 
+#include "oneshot/i18n.h"
+
 #if defined(__WIN32__)
 #include <Winsock2.h>
 #include "util/win-consoleutils.h"
@@ -294,6 +296,9 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
+    /* Load OneShot i18n language data */
+    OneshotImpl::i18n::loadLanguageMetadata();
+
     if (conf.windowTitle.empty())
       conf.windowTitle = conf.game.title;
 
@@ -525,6 +530,10 @@ int main(int argc, char *argv[]) {
     if (wsadata.wVersion)
       WSACleanup();
 #endif
+
+    /* Unload OneShot i18n language data */
+    OneshotImpl::i18n::unloadLocale();
+    OneshotImpl::i18n::unloadLanguageMetadata();
 
 #ifdef MKXPZ_STEAM
     STEAMSHIM_deinit();

@@ -1,5 +1,6 @@
 #include "binding-util.h"
 #include "sharedstate.h"
+#include "oneshot/i18n.h"
 #include "oneshot/oneshot.h"
 #include "oneshot/journal.h"
 
@@ -30,6 +31,8 @@ RB_METHOD(journalSetLang)
 	rb_get_args(argc, argv, "z", &lang RB_ARG_END);
 
 	shState->oneshot().journal->setLang(lang);
+
+	OneshotImpl::i18n::loadLocale(lang);
 
 	return Qnil;
 }

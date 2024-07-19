@@ -138,6 +138,7 @@ mkxp_sources += files(
     'net/LUrlParser.cpp',
     'net/net.cpp',
 
+    'oneshot/i18n.cpp',
     'oneshot/oneshot.cpp',
     'oneshot/journal.cpp',
     'oneshot/wallpaper.cpp',

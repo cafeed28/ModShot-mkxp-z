@@ -34,6 +34,7 @@
 #include "input.h"
 #include "etc-internal.h"
 #include "util.h"
+#include "oneshot/i18n.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -92,22 +93,22 @@ std::string sourceDescString(const SourceDesc &src)
 		case Key:
 		{
 			if (src.d.scan == SDL_SCANCODE_LSHIFT)
-				return "Shift";
+				return OneshotImpl::i18n::findtext("Shift");
 
 			SDL_Keycode key = SDL_GetKeyFromScancode(src.d.scan);
 			const char *str = SDL_GetKeyName(key);
 
 			if (*str == '\0') {
-				return "Unknown key";
+				return OneshotImpl::i18n::findtext("Unknown key");
 			} else {
-				snprintf(buf, sizeof(buf), "%s Key", str);
+				snprintf(buf, sizeof(buf), OneshotImpl::i18n::findtext("%s Key").c_str(), str);
 				return buf;
 			}
 		}
 
 		case CButton:
 			snprintf(buf, sizeof(buf), "%s", shState->input().getButtonName(src.d.cb));
-			return buf;
+			return OneshotImpl::i18n::findtext(buf);
 
 		case CAxis:
 			if (src.d.ca.axis >= SDL_CONTROLLER_AXIS_LEFTX && src.d.ca.axis <= SDL_CONTROLLER_AXIS_RIGHTY) {
@@ -138,7 +139,7 @@ std::string sourceDescString(const SourceDesc &src)
 			} else {
 				snprintf(buf, sizeof(buf), "%s", shState->input().getAxisName(src.d.ca.axis));
 			}
-			return buf;
+			return OneshotImpl::i18n::findtext(buf);
 	}
 
 	assert(!"unreachable");
@@ -438,8 +439,14 @@ struct SettingsMenuPrivate
 		else
 		{
 			dstRect.w = alignW;
-			dstRect.x = x;
-			SDL_BlitScaled(txtSurf, 0, surf, &dstRect);
+			dstRect.x = drawOff.x + x;
+
+			SDL_Rect srcRect;
+			srcRect.x = 0;
+			srcRect.y = 0;
+			srcRect.w = dstRect.w;
+			srcRect.h = txtSurf->h;
+			SDL_BlitSurface(txtSurf, &srcRect, surf, &dstRect);
 		}
 	}
 
@@ -448,8 +455,10 @@ struct SettingsMenuPrivate
 	              Justification just, SDL_Color c, bool bold = false)
 	{
 		SDL_Surface *txt = createTextSurface(str, c, bold);
-		blitTextSurf(surf, x, y, alignW, txt, just);
-		SDL_FreeSurface(txt);
+		if (txt) {
+			blitTextSurf(surf, x, y, alignW, txt, just);
+			SDL_FreeSurface(txt);
+		}
 	}
 
 	void drawText(SDL_Surface *surf, const char *str,
@@ -538,7 +547,7 @@ struct SettingsMenuPrivate
 		if (state == AwaitingInput)
 		{
 			char buf[64];
-			snprintf(buf, sizeof(buf), "Press key or joystick button for \"%s\"", captureName);
+			snprintf(buf, sizeof(buf), OneshotImpl::i18n::findtext("Press key or joystick button for \"%s\"").c_str(), captureName);
 
 			drawOff = Vec2i();
 
@@ -789,7 +798,7 @@ void BindingWidget::drawHandler(SDL_Surface *surf)
 	p->strokeRectInner(surf, cLine, 0, 0, rect.w, rect.h, 2);
 
 	/* Virtual button name */
-	p->drawText(surf, vb.str, 1, rect.h/2, cellOffX, Center, true);
+	p->drawText(surf, OneshotImpl::i18n::findtext(vb.str).c_str(), 1, rect.h/2, cellOffX, Center, true);
 
 	/* Cell frames */
 	p->strokeLineV(surf, cLine, cellOffX, 0, rect.h, 2);
@@ -844,7 +853,7 @@ void BindingWidget::clickHandler(int x, int y, uint8_t button)
 	if (cell == -1)
 		return;
 
-	p->onBWidgetCellClicked(src[cell], vb.str, button);
+	p->onBWidgetCellClicked(src[cell], OneshotImpl::i18n::findtext(vb.str).c_str(), button);
 }
 
 int BindingWidget::cellIndex(int x, int y) const
@@ -901,7 +910,7 @@ void Button::drawHandler(SDL_Surface *surf)
 		p->fillRect(surf, cBgDark, 0, 0, rect.w, rect.h);
 
 	p->strokeRectInner(surf, cLine, 0, 0, rect.w, rect.h, 2);
-	p->drawText(surf, str, 0, rect.h/2, rect.w, Center);
+	p->drawText(surf, OneshotImpl::i18n::findtext(str).c_str(), 0, rect.h/2, rect.w, Center);
 }
 
 void Button::motionHandler(int, int)
@@ -934,7 +943,7 @@ void Label::setVisible(bool val)
 void Label::drawHandler(SDL_Surface *surf)
 {
 	if (visible)
-		p->drawText(surf, str, 0, rect.h/2, rect.w, Left, c);
+		p->drawText(surf, OneshotImpl::i18n::findtext(str).c_str(), 0, rect.h/2, rect.w, Left, c);
 }
 
 SettingsMenu::SettingsMenu(RGSSThreadData &rtData)
@@ -961,13 +970,17 @@ SettingsMenu::SettingsMenu(RGSSThreadData &rtData)
 	p->hasFocus = false;
 	p->destroyReq = false;
 
-	p->window = SDL_CreateWindow("Key bindings",
-	                             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-	                             winSize.x, winSize.y, SDL_WINDOW_INPUT_FOCUS);
+	p->window = SDL_CreateWindow(
+		OneshotImpl::i18n::findtext("Key bindings").c_str(),
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		winSize.x, winSize.y,
+		SDL_WINDOW_INPUT_FOCUS
+	);
 	p->winSurf = SDL_GetWindowSurface(p->window);
 	p->winID = SDL_GetWindowID(p->window);
 
-	p->font = SharedFontState::openBundled(fontSize);
+	//p->font = SharedFontState::openBundled(fontSize);
+	p->font = shState->fontState().getFont(OneshotImpl::i18n::getFontName(), OneshotImpl::i18n::getFontSize());
 
 	p->rgb = p->winSurf->format;
 
@@ -1017,7 +1030,7 @@ SettingsMenu::SettingsMenu(RGSSThreadData &rtData)
 	const char *info = "Use left click to bind a slot, right click to clear its binding";
 	p->infoLabel = Label(p, IntRect(16, 16, winSize.x, 16), info, cText, cText, cText);
 
-	const char *warn = "Warning: Same physical key bound to multiple slots";
+	const char *warn = "Warning: Same physical action bound to multiple slots";
 	p->dupWarnLabel = Label(p, IntRect(16, 36, winSize.x, 16), warn, 255, 0, 0);
 
 	p->widgets.push_back(&p->infoLabel);
@@ -1034,7 +1047,7 @@ SettingsMenu::SettingsMenu(RGSSThreadData &rtData)
 
 SettingsMenu::~SettingsMenu()
 {
-	TTF_CloseFont(p->font);
+	//TTF_CloseFont(p->font);
 	SDL_DestroyWindow(p->window);
 
 	delete p;
