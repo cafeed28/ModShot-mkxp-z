@@ -764,7 +764,7 @@ $(DLDIR)/$(DLARCH)/libffi/Makefile: $(DLDIR)/$(DLARCH)/libffi/configure
 
 $(DLDIR)/$(DLARCH)/libffi/configure: $(DLDIR)/$(DLARCH)/libffi/configure.ac
 	@printf "\e[94m=>\e[0m \e[36mPrepare libffi configuration files...\e[0m\n"
-	@cd $(DLDIR)/$(DLARCH)/libffi; autoreconf -fi
+	@cd $(DLDIR)/$(DLARCH)/libffi; WANT_AUTOMAKE='1.16' autoreconf -fi
 
 $(DLDIR)/$(DLARCH)/libffi/configure.ac:
 	@printf "\e[94m=>\e[0m \e[36mDownloading libffi 3.4.6...\e[0m\n"
